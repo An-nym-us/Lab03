@@ -9,6 +9,9 @@
 #include "uiDraw.h"
 #include "ground.h"
 #include "lander.h"
+#include <iostream>
+#define _USE_MATH_DEFINES
+#include <cmath>
 using namespace std;
 
 /*************************************************************************
@@ -55,6 +58,7 @@ void callBack(const Interface* pUI, void* p)
     Lander* landerInstance = (Lander*)p;
 
 
+
     // move the ship around
     if (pUI->isRight())
         landerInstance->angle -= 0.1;
@@ -63,12 +67,13 @@ void callBack(const Interface* pUI, void* p)
     if (pUI->isUp())
         landerInstance->ptLM.addY(-1.0);
     if (pUI->isDown())
-        landerInstance->ptLM.addY(1.0);
+        Physics().sendVectorDirection(landerInstance);
+        //landerInstance->ptLM.addY(1.0);
 
     // draw the ground
     landerInstance->ground.draw(gout);
 
-    // draw the lander and its flames
+    // draw the Physics and its flames
     gout.drawLander(landerInstance->ptLM /*position*/, landerInstance->angle /*angle*/);
     gout.drawLanderFlames(landerInstance->ptLM, landerInstance->angle, /*angle*/
         pUI->isDown(), pUI->isLeft(), pUI->isRight());
@@ -81,21 +86,49 @@ void callBack(const Interface* pUI, void* p)
     gout.drawStar(landerInstance->ptStar, landerInstance->phase++);
 
 
-    lander().landerState(landerInstance);
+
+
+    // Create the general physics effect of moon gravity.
+    Physics().gravity(landerInstance);
 
 
 
 
 }
 
-
-
-void lander::landerState(Lander* demo)
+/*********************************
+* 
+* 
+* 
+ *********************************/
+void Physics::sendVectorDirection(Lander* Instance)
 {
-    //std::cout << "test" << endl;
+    
+    double dy = 0;
+    double dx = 0;
+    //double angle = Instance->angle * (3.1415927 / 180);
+    dx = sin(Instance->angle) * -2;
+    dy = cos(Instance->angle) * 2;
+    cout << "dy = " << dy << "   dx = " << dx << endl;
+    Instance->ptLM.addY(dy);
+    Instance->ptLM.addX(dx);
 
+
+}
+
+
+
+
+
+
+/*********************************
+* Create The effect of Gravity 
+* The lander will be constantly 
+* Pulled Down.
+ *********************************/
+void Physics::gravity(Lander* demo)
+{
     demo->ptLM.addY(-0.5);
-
 }
 
 
