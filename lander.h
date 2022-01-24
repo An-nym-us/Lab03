@@ -24,15 +24,24 @@ public:
     unsigned char phase;  // phase of the star's blinking
     Ground ground;
     Point ptStar;
+
+
+
+
+
 };
 
 
-class lander
+class Physics
 {
 
 public:
 
-	void landerState(Lander* LanderInstance);
+	void gravity(Lander* LanderInstance);
+    void sendVectorDirection(Lander* LanderInstance);
+
+
+
 
 private:
 

@@ -1,6 +1,6 @@
 /***********************************************************************
  * Header File:
- *    Ground : Represents the ground in the lunar lander game
+ *    Ground : Represents the ground in the lunar Physics game
  * Author:
  *    Br. Helfrich
  * Summary:

@@ -1,6 +1,6 @@
 /***********************************************************************
  * Source File:
- *    Ground : Represents the ground in the lunar lander game
+ *    Ground : Represents the ground in the lunar Physics game
  * Author:
  *    Br. Helfrich
  * Summary:
@@ -77,11 +77,11 @@ Ground::Ground(const Point & ptUpperRight) : ptUpperRight(ptUpperRight)
 
 /***********************************************************
  * HTI GROUND
- * Did the lander hit the ground?
+ * Did the Physics hit the ground?
  **********************************************************/
 bool Ground::hitGround(const Point& position, int landerWidth) const
 {
-   // find the extent of the lander
+   // find the extent of the Physics
    int xMin = (int)(position.getX() - (double)landerWidth / 2.0);
    int xMax = (int)(position.getX() + (double)landerWidth / 2.0);
 
