@@ -1,5 +1,5 @@
 /**********************************************************************
- * GL Lander
+ * GL LanderState
  * Just a simple program to demonstrate how to create an Open GL window,
  * draw something on the window, and accept simple user input
  **********************************************************************/
@@ -12,16 +12,23 @@
 #include <iostream>
 #define _USE_MATH_DEFINES
 #include <cmath>
+
+
+#include <string>
+#include <iomanip>
+#include <sstream>
+#include <format>
+
 using namespace std;
 
 /*************************************************************************
- * Lander
+ * LanderState
  * Test structure to capture the LM that will move around the screen
  *************************************************************************/
-//class Lander
+//class LanderState
 //{
 //public:
-//    Lander(const Point& ptUpperRight) :
+//    LanderState(const Point& ptUpperRight) :
 //        angle(0.0),
 //        ptStar(ptUpperRight.getX() - 20.0, ptUpperRight.getY() - 20.0),
 //        ptLM(ptUpperRight.getX() / 2.0, ptUpperRight.getY() / 2.0),
@@ -55,7 +62,8 @@ void callBack(const Interface* pUI, void* p)
 
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
-    Lander* landerInstance = (Lander*)p;
+    LanderState* landerInstance = (LanderState*)p;
+    //Stars* starInstance = (Stars*)p;
 
 
 
@@ -67,8 +75,8 @@ void callBack(const Interface* pUI, void* p)
     if (pUI->isUp())
         landerInstance->ptLM.addY(-1.0);
     if (pUI->isDown())
-        Physics().sendVectorDirection(landerInstance);
-        //landerInstance->ptLM.addY(1.0);
+        Thurst().sendVectorDirection(landerInstance);
+
 
     // draw the ground
     landerInstance->ground.draw(gout);
@@ -78,9 +86,20 @@ void callBack(const Interface* pUI, void* p)
     gout.drawLanderFlames(landerInstance->ptLM, landerInstance->angle, /*angle*/
         pUI->isDown(), pUI->isLeft(), pUI->isRight());
 
+
+
+
+
     // put some text on the screen
-    gout.setPosition(Point(30.0, 30.0));
-    gout << "Demo (" << (int)landerInstance->ptLM.getX() << ", " << (int)landerInstance->ptLM.getY() << ")" << "\n";
+    gout.setPosition(Point(30.0, 550.0));
+    //gout << "Demo (" << (int)landerInstance->ptLM.getX() << ", " << (int)landerInstance->ptLM.getY() << ")" << "\n";
+    gout << landerInstance->onScreenText();
+
+
+
+
+
+
 
     // draw our little star
     gout.drawStar(landerInstance->ptStar, landerInstance->phase++);
@@ -101,12 +120,11 @@ void callBack(const Interface* pUI, void* p)
 * 
 * 
  *********************************/
-void Physics::sendVectorDirection(Lander* Instance)
+void Thurst::sendVectorDirection(LanderState* Instance)
 {
     
     double dy = 0;
     double dx = 0;
-    //double angle = Instance->angle * (3.1415927 / 180);
     dx = sin(Instance->angle) * -2;
     dy = cos(Instance->angle) * 2;
     cout << "dy = " << dy << "   dx = " << dx << endl;
@@ -118,6 +136,32 @@ void Physics::sendVectorDirection(Lander* Instance)
 
 
 
+/*********************************
+*
+*
+*
+ *********************************/
+string LanderState::onScreenText()
+{
+    double fuel = 777777.00;
+    double altitude = 777.00;
+    double speed = 7.00;
+
+    
+    string outstring =
+        "Fuel:\t" + to_string(fuel) + "\n" 
+        + "Altitude:\t" + to_string(altitude) + "\n"
+        + "Speed:\t" + to_string(speed)
+
+        
+        ;
+
+
+
+
+    return outstring;
+}
+
 
 
 
@@ -126,7 +170,7 @@ void Physics::sendVectorDirection(Lander* Instance)
 * The lander will be constantly 
 * Pulled Down.
  *********************************/
-void Physics::gravity(Lander* demo)
+void Physics::gravity(LanderState* demo)
 {
     demo->ptLM.addY(-0.5);
 }
@@ -134,7 +178,7 @@ void Physics::gravity(Lander* demo)
 
 /*********************************
  * Main is pretty sparse.  Just initialize
- * my Lander type and call the display engine.
+ * my LanderState type and call the display engine.
  * That is all!
  *********************************/
 #ifdef _WIN32_X
@@ -155,7 +199,7 @@ int main(int argc, char** argv)
         ptUpperRight);
 
     // Initialize the game class
-    Lander demo(ptUpperRight);
+    LanderState demo(ptUpperRight);
 
     // set everything into action
     ui.run(callBack, &demo);

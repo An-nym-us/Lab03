@@ -4,10 +4,10 @@
 #include "uiDraw.h"
 #include "ground.h"
 
-class Lander
+class LanderState
 {
 public:
-    Lander(const Point& ptUpperRight) :
+    LanderState(const Point& ptUpperRight) :
         angle(0.0),
         ptStar(ptUpperRight.getX() - 20.0, ptUpperRight.getY() - 20.0),
         ptLM(ptUpperRight.getX() / 2.0, ptUpperRight.getY() / 2.0),
@@ -27,26 +27,57 @@ public:
 
 
 
+    string onScreenText(); // Centerlize what text to place on screen
 
 
 };
 
+
+class Thurst
+{
+
+public:
+    void sendVectorDirection(LanderState* LanderInstance);
+private:
+
+protected:
+
+
+};
+
+class Crash
+{
+
+};
+
+
+
+class Stars
+{
+//public:
+//    Stars(const Point& ptUpperRight) : ptStar(ptUpperRight.getX() - 20.0, ptUpperRight.getY() - 20.0)
+//    {
+//        phase = random(0, 255);
+//    }
+//
+//    Point ptStar;
+//    unsigned char phase;
+//
+//private:
+//
+//protected:
+//
+};
 
 class Physics
 {
 
 public:
 
-	void gravity(Lander* LanderInstance);
-    void sendVectorDirection(Lander* LanderInstance);
-
-
+	void gravity(LanderState* LanderInstance);
 
 
 private:
-
-
-
 
 protected:
 

@@ -109,6 +109,7 @@ void ogstream::drawText(const Point& topLeft, const char* text) const
    // prepare to draw the text from the top-left corner
    glRasterPos2f((GLfloat)topLeft.getX(), (GLfloat)topLeft.getY());
 
+
    // loop through the text
    for (const char* p = text; *p; p++)
       glutBitmapCharacter(pFont, *p);
@@ -233,7 +234,7 @@ void ogstream::drawRectangle(const Point& begin, const Point& end,
 }
 
 /***********************************************************************
- * DRAW Lander
+ * DRAW LanderState
  * Draw a moon-Physics spaceship on the screen at a given point
  ***********************************************************************/
 void ogstream::drawLander(const Point& point, double angle)
@@ -316,7 +317,7 @@ void ogstream::drawLander(const Point& point, double angle)
 }
 
 /***********************************************************************
- * DRAW Lander Flame
+ * DRAW LanderState Flame
  * Draw the flames coming out of a moonlander for thrust
  ***********************************************************************/
 void ogstream::drawLanderFlames(const Point& point, double angle,
