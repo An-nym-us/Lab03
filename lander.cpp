@@ -63,7 +63,7 @@ void callBack(const Interface* pUI, void* p)
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
     LanderState* landerInstance = (LanderState*)p;
-    //Stars* starInstance = (Stars*)p;
+    myStars starInstance;
 
 
 
@@ -92,7 +92,6 @@ void callBack(const Interface* pUI, void* p)
 
     // put some text on the screen
     gout.setPosition(Point(30.0, 550.0));
-    //gout << "Demo (" << (int)landerInstance->ptLM.getX() << ", " << (int)landerInstance->ptLM.getY() << ")" << "\n";
     gout << landerInstance->onScreenText();
 
 
@@ -101,8 +100,12 @@ void callBack(const Interface* pUI, void* p)
 
 
 
-    // draw our little star
-    gout.drawStar(landerInstance->ptStar, landerInstance->phase++);
+    // draw our little star 
+    // TODO
+    /*****
+    *    gout.drawStar(starInstance->ptStar, starInstance->phase++);
+    ******/
+
 
 
 
@@ -151,13 +154,7 @@ string LanderState::onScreenText()
     string outstring =
         "Fuel:\t" + to_string(fuel) + "\n" 
         + "Altitude:\t" + to_string(altitude) + "\n"
-        + "Speed:\t" + to_string(speed)
-
-        
-        ;
-
-
-
+        + "Speed:\t" + to_string(speed);
 
     return outstring;
 }
@@ -200,6 +197,7 @@ int main(int argc, char** argv)
 
     // Initialize the game class
     LanderState demo(ptUpperRight);
+
 
     // set everything into action
     ui.run(callBack, &demo);
