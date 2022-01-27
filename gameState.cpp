@@ -8,7 +8,7 @@
 #include "uiInteract.h"
 #include "uiDraw.h"
 #include "ground.h"
-#include "lander.h"
+#include "gameState.h"
 #include <iostream>
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -63,7 +63,7 @@ void callBack(const Interface* pUI, void* p)
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
     LanderState* landerInstance = (LanderState*)p;
-    myStars starInstance;
+    Stars starInstance;
 
 
 
@@ -105,7 +105,7 @@ void callBack(const Interface* pUI, void* p)
     
     //gout.drawStar(landerInstance->ptStar, landerInstance->phase++);
     
-    starInstance.testoutifcalled();
+    starInstance.showStars();
 
 
 
@@ -159,13 +159,21 @@ string LanderState::onScreenText()
 }
 
 
-
-void myStars::testoutifcalled()
+/*********************************
+* This will create multiple instances
+* of the stars on the screen above 
+* the ground.
+ *********************************/
+void Stars::showStars()
 {
     ogstream gout;
-    cout << "777 test";
+
+
+    cout << "777 test";  // tick to to see if called
     Point test(500,500);
     gout.drawStar(test, 255);
+
+
 }
 
 
@@ -176,9 +184,9 @@ void myStars::testoutifcalled()
 * The lander will be constantly 
 * Pulled Down.
  *********************************/
-void Physics::gravity(LanderState* demo)
+void Physics::gravity(LanderState* landerState)
 {
-    demo->ptLM.addY(-0.5);
+    landerState->ptLM.addY(-0.5);
 }
 
 

@@ -30,7 +30,7 @@
     <ClCompile Include="uiInteract.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lander.cpp">
+    <ClCompile Include="gameState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,7 +47,7 @@
     <ClInclude Include="uiInteract.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lander.h">
+    <ClInclude Include="gameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
