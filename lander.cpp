@@ -102,11 +102,10 @@ void callBack(const Interface* pUI, void* p)
 
     // draw our little star 
     // TODO
-    /*****
-    *    gout.drawStar(starInstance->ptStar, starInstance->phase++);
-    ******/
-
-
+    
+    //gout.drawStar(landerInstance->ptStar, landerInstance->phase++);
+    
+    starInstance.testoutifcalled();
 
 
 
@@ -157,6 +156,16 @@ string LanderState::onScreenText()
         + "Speed:\t" + to_string(speed);
 
     return outstring;
+}
+
+
+
+void myStars::testoutifcalled()
+{
+    ogstream gout;
+    cout << "777 test";
+    Point test(500,500);
+    gout.drawStar(test, 255);
 }
 
 
