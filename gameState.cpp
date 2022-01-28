@@ -21,31 +21,7 @@
 
 using namespace std;
 
-/*************************************************************************
- * LanderState
- * Test structure to capture the LM that will move around the screen
- *************************************************************************/
-//class LanderState
-//{
-//public:
-//    LanderState(const Point& ptUpperRight) :
-//        angle(0.0),
-//        ptStar(ptUpperRight.getX() - 20.0, ptUpperRight.getY() - 20.0),
-//        ptLM(ptUpperRight.getX() / 2.0, ptUpperRight.getY() / 2.0),
-//        ground(ptUpperRight)
-//    {
-//
-//        phase = random(0, 255);
-//    }
-//
-//    // this is just for test purposes.  Don't make member variables public!
-//    Point ptLM;           // location of the LM on the screen
-//    Point ptUpperRight;   // size of the screen
-//    double angle;         // angle the LM is pointing
-//    unsigned char phase;  // phase of the star's blinking
-//    Ground ground;
-//    Point ptStar;
-//};
+
 
 /*************************************
  * All the interesting work happens here, when
@@ -102,9 +78,7 @@ void callBack(const Interface* pUI, void* p)
 
     // draw our little star 
     // TODO
-    
-    //gout.drawStar(landerInstance->ptStar, landerInstance->phase++);
-    
+   
     starInstance.showStars();
 
 
@@ -169,8 +143,8 @@ void Stars::showStars()
     ogstream gout;
 
 
-    cout << "777 test";  // tick to to see if called
-    Point test(500,500);
+    Point test(random(250,  500), random(250, 500));
+
     gout.drawStar(test, 255);
 
 
