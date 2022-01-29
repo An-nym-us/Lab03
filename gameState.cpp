@@ -145,7 +145,8 @@ void Stars::showStars()
 
     Point test(random(1,  600), random(400, 600));
 
-    gout.drawStar(test, 255);
+    gout.drawStar(test, random(1, 255));
+    
 
 
 }
