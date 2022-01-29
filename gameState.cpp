@@ -143,7 +143,7 @@ void Stars::showStars()
     ogstream gout;
 
 
-    Point test(random(250,  500), random(250, 500));
+    Point test(random(1,  600), random(400, 600));
 
     gout.drawStar(test, 255);
 
