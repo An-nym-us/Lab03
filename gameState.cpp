@@ -10,6 +10,7 @@
 #include "ground.h"
 #include "gameState.h"
 #include <iostream>
+#include <ctime>
 #define _USE_MATH_DEFINES
 #include <cmath>
 
