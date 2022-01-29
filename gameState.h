@@ -11,13 +11,9 @@ class LanderState
 public:
     LanderState(const Point& ptUpperRight) :
         angle(0.0),
-
         ptLM(ptUpperRight.getX() / 2.0, ptUpperRight.getY() / 2.0),
         ground(ptUpperRight)
-    {
-        
-    }
-
+    {};
 
     Point ptLM;           // location of the LM on the screen
     Point ptUpperRight;   // size of the screen
@@ -25,8 +21,13 @@ public:
     Ground ground;
 
 
+    double landerDX = 0;
+    double landerDY = 0;
 
-    string onScreenText(); // Centerlize what text to place on screen
+
+
+
+    void onScreenText(); // Centerlize what text to place on screen
 
 
 };
@@ -34,13 +35,15 @@ public:
 
 class Thurst
 {
-
 public:
     void sendVectorDirection(LanderState* LanderInstance);
+
 private:
 
 protected:
 };
+
+
 
 class Crash
 {
@@ -52,7 +55,6 @@ class Crash
 class Stars
 {
 public:
-
     void showStars();
 
 private:
@@ -68,11 +70,20 @@ class Physics
 {
 
 public:
-
 	void gravity(LanderState* LanderInstance);
+    //void Momentum();
+
+
+
+
+
 
 
 private:
+    short ax = 0;
+    short dx = 0;
+
+
 
 protected:
 

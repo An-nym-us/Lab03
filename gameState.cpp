@@ -68,13 +68,8 @@ void callBack(const Interface* pUI, void* p)
 
 
     // put some text on the screen
-    gout.setPosition(Point(30.0, 550.0));
-    gout << landerInstance->onScreenText();
 
-
-
-
-
+    landerInstance->onScreenText();
 
 
     // draw our little star 
@@ -93,20 +88,20 @@ void callBack(const Interface* pUI, void* p)
 }
 
 /*********************************
-* 
-* 
-* 
+* Apply trust to lander depending
+* on its current orentation.
  *********************************/
 void Thurst::sendVectorDirection(LanderState* Instance)
 {
     
-    double dy = 0;
-    double dx = 0;
-    dx = sin(Instance->angle) * -2;
-    dy = cos(Instance->angle) * 2;
-    cout << "dy = " << dy << "   dx = " << dx << endl;
-    Instance->ptLM.addY(dy);
-    Instance->ptLM.addX(dx);
+    Instance->landerDX = sin(Instance->angle) * -2;
+    Instance->landerDY = cos(Instance->angle) * 2;
+
+
+    cout << "dy = " << Instance->landerDY << "   dx = " << Instance->landerDX << endl; // Debugg
+
+    Instance->ptLM.addY(Instance->landerDY);
+    Instance->ptLM.addX(Instance->landerDX);
 
 
 }
@@ -116,21 +111,25 @@ void Thurst::sendVectorDirection(LanderState* Instance)
 /*********************************
 *
 *
-*
  *********************************/
-string LanderState::onScreenText()
+void LanderState::onScreenText()
 {
-    double fuel = 777777.00;
+    ogstream gout;
+    gout.setPosition(Point(30.0, 550.0));
+
+
+    static double fuel = 777777.00;
     double altitude = 777.00;
     double speed = 7.00;
 
-    
-    string outstring =
-        "Fuel:\t" + to_string(fuel) + "\n" 
-        + "Altitude:\t" + to_string(altitude) + "\n"
-        + "Speed:\t" + to_string(speed);
+    // debug fuel system
+    fuel--;
 
-    return outstring;
+        gout << "Fuel:\t" << fuel << "\n" 
+        << "Altitude:\t" << altitude << "\n"
+        << "Speed:\t" << speed << showpoint << fixed << setprecision(2);
+
+
 }
 
 
@@ -143,13 +142,9 @@ void Stars::showStars()
 {
     ogstream gout;
 
-
-    Point test(random(1,  600), random(400, 600));
-
-    gout.drawStar(test, random(1, 255));
+    Point test(random(1,  600), random(400, 600)); // create random on screen postions for the stars
+    gout.drawStar(test, random(1, 255));  // show the stars at different intensity values
     
-
-
 }
 
 
