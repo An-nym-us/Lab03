@@ -69,7 +69,7 @@ void callBack(const Interface* pUI, void* p)
 
     // put some text on the screen
 
-    landerInstance->onScreenText();
+    landerInstance->onScreenText(landerInstance);
 
 
     // draw our little star 
@@ -112,23 +112,28 @@ void Thurst::sendVectorDirection(LanderState* Instance)
 *
 *
  *********************************/
-void LanderState::onScreenText()
+void LanderState::onScreenText(LanderState* landerInstance)
 {
     ogstream gout;
     gout.setPosition(Point(30.0, 550.0));
 
 
-    static double fuel = 777777.00;
-    double altitude = 777.00;
-    double speed = 7.00;
 
-    // debug fuel system
-    fuel--;
+/*********************************
+* Plan on passing reading the values for the 
+* onscreen text directly from the lander state.
+*
+ *********************************/
 
-        gout << "Fuel:\t" << fuel << "\n" 
-        << "Altitude:\t" << altitude << "\n"
-        << "Speed:\t" << speed << showpoint << fixed << setprecision(2);
 
+        gout << "Fuel:\t" << landerInstance->fuel << "\n"
+        << "Altitude:\t" << landerInstance->altitude << "\n"
+        << "Speed:\t" << landerInstance->speed << showpoint << fixed << setprecision(2);
+
+
+        landerInstance->fuel--;          // debug system ONLY
+        landerInstance->speed++;         // debug system ONLY
+        landerInstance->altitude++;        // debug system ONLY
 
 }
 

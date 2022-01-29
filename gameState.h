@@ -21,13 +21,15 @@ public:
     Ground ground;
 
 
-    double landerDX = 0;
-    double landerDY = 0;
+    double landerDX = 0; // lander stating state
+    double landerDY = 0; // lander stating state
+    double fuel = 7777;
+    double speed = 77;
+    double altitude = 777;
 
 
 
-
-    void onScreenText(); // Centerlize what text to place on screen
+    void onScreenText(LanderState* landerInstance); // Centerlize what text to place on screen
 
 
 };
@@ -47,7 +49,12 @@ protected:
 
 class Crash
 {
+public:
+    bool isInGround(LanderState * landerInstance);
 
+private:
+
+protected:
 };
 
 
@@ -71,17 +78,16 @@ class Physics
 
 public:
 	void gravity(LanderState* LanderInstance);
-    //void Momentum();
-
-
-
+    void Momentum();
 
 
 
 
 private:
+
     short ax = 0;
     short dx = 0;
+    double time = 0;
 
 
 
