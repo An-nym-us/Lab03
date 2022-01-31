@@ -19,6 +19,8 @@
 #include <iomanip>
 #include <sstream>
 #include <format>
+#include <vector>
+
 
 using namespace std;
 
@@ -109,26 +111,19 @@ void Thurst::sendVectorDirection(LanderState* Instance)
 
 
 /*********************************
-*
-*
+ * Plan on passing reading the values for the
+ * onscreen text directly from the lander state.
  *********************************/
 void LanderState::onScreenText(LanderState* landerInstance)
 {
-    ogstream gout;
+      ogstream gout;
     gout.setPosition(Point(30.0, 550.0));
 
+    
 
-
-/*********************************
-* Plan on passing reading the values for the 
-* onscreen text directly from the lander state.
-*
- *********************************/
-
-
-        gout << "Fuel:\t" << landerInstance->fuel << "\n"
-        << "Altitude:\t" << landerInstance->altitude << "\n"
-        << "Speed:\t" << landerInstance->speed << showpoint << fixed << setprecision(2);
+        gout << "Fuel:\t" << landerInstance->fuel << " lbs" << "\n"
+        << "Altitude:\t" << landerInstance->altitude <<" meters"<<  "\n"
+        << "Speed:\t" << landerInstance->speed << showpoint << fixed << setprecision(2) << " m/s";
 
 
         landerInstance->fuel--;          // debug system ONLY
@@ -145,10 +140,25 @@ void LanderState::onScreenText(LanderState* landerInstance)
  *********************************/
 void Stars::showStars()
 {
-    ogstream gout;
-
-    Point test(random(1,  600), random(400, 600)); // create random on screen postions for the stars
-    gout.drawStar(test, random(1, 255));  // show the stars at different intensity values
+   ogstream gout;
+    
+    vector<Point> points;
+    int x[51] = {40,50,60,70,100,20,10,120,150,160,190,200,220,230,240,250,260,270,300,350,360,390,400,410, 450,460,480,500,310,320,480,500,510};
+    int y[51] = {400,500,600,410,420,510,520,450,500,600,530,240,560,450,460,490,520,300,330,350,280,290,300,303,403,503,499,599,299,399,320,480,550};
+    
+//    Point test; // create random on screen postions for the stars
+//    Point test2(100,401);
+    for(int i=0; i <31; i++){
+        Point test(x[i],y[i]);
+        points.push_back(test);
+      
+    }
+    
+    
+    for(int i=0; i < points.size(); i++){
+        gout.drawStar(points[i], random(0,255));
+    }
+    
     
 }
 
