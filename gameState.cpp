@@ -43,22 +43,22 @@ void callBack(const Interface* pUI, void* p)
     // is the first step of every single callback function in OpenGL. 
     LanderState* landerInstance = (LanderState*)p;
     Stars starInstance;
+    Thrust thrust;
+    Physics physics;
+
+
 
 
 
     // move the ship around
-    if (pUI->isRight())
-        landerInstance->angle -= 0.1;
-    if (pUI->isLeft())
-        landerInstance->angle += 0.1;
-    if (pUI->isUp())
-        landerInstance->ptLM.addY(-1.0);
-    if (pUI->isDown())
-        Thurst().sendVectorDirection(landerInstance);
+    thrust.updateControllerInputs(pUI, landerInstance);
+
 
 
     // draw the ground
     landerInstance->ground.draw(gout);
+
+
 
     // draw the Physics and its flames
     gout.drawLander(landerInstance->ptLM /*position*/, landerInstance->angle /*angle*/);
@@ -67,22 +67,19 @@ void callBack(const Interface* pUI, void* p)
 
 
 
-
-
     // put some text on the screen
-
     landerInstance->onScreenText(landerInstance);
 
 
     // draw our little star 
-    // TODO
+
    
     starInstance.showStars();
 
 
-
     // Create the general physics effect of moon gravity.
-    Physics().gravity(landerInstance);
+    physics.gravity(landerInstance);
+    physics.Momentum(landerInstance);
 
 
 
@@ -93,7 +90,7 @@ void callBack(const Interface* pUI, void* p)
 * Apply trust to lander depending
 * on its current orentation.
  *********************************/
-void Thurst::sendVectorDirection(LanderState* Instance)
+void Thrust::sendVectorDirection(LanderState* Instance)
 {
     
     Instance->landerDX = sin(Instance->angle) * -2;
@@ -106,6 +103,25 @@ void Thurst::sendVectorDirection(LanderState* Instance)
     Instance->ptLM.addX(Instance->landerDX);
 
 
+}
+
+
+
+
+/*********************************
+*
+* 
+ *********************************/
+void Thrust::updateControllerInputs(const Interface* pUI, LanderState* landerInstance)
+{
+    if (pUI->isRight())
+        landerInstance->angle -= 0.1;
+    if (pUI->isLeft())
+        landerInstance->angle += 0.1;
+    if (pUI->isUp())
+        landerInstance->ptLM.addY(-1.0);
+    if (pUI->isDown())
+        sendVectorDirection(landerInstance);
 }
 
 
@@ -175,6 +191,18 @@ void Physics::gravity(LanderState* landerState)
     landerState->ptLM.addY(-0.5);
 }
 
+
+
+
+void Physics::Momentum(LanderState* landerState)
+{
+
+
+
+
+
+
+}
 
 /*********************************
  * Main is pretty sparse.  Just initialize

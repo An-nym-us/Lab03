@@ -21,6 +21,8 @@ public:
     Ground ground;
 
 
+
+    //DEBUG
     double landerDX = 0; // lander stating state
     double landerDY = 0; // lander stating state
     double fuel = 7777;
@@ -35,10 +37,11 @@ public:
 };
 
 
-class Thurst
+class Thrust
 {
 public:
     void sendVectorDirection(LanderState* LanderInstance);
+    void updateControllerInputs(const Interface* pUI, LanderState* LanderInstance);
 
 private:
 
@@ -78,9 +81,7 @@ class Physics
 
 public:
 	void gravity(LanderState* LanderInstance);
-    void Momentum();
-
-
+    void Momentum(LanderState* LanderInstance);
 
 
 private:
