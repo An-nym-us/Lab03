@@ -13,7 +13,7 @@ class LanderState
 public:
     LanderState(const Point& ptUpperRight) : 
         angle(0.0),
-        ptLM(ptUpperRight.getX() / 2.0, ptUpperRight.getY() / 2.0),
+        ptLM(ptUpperRight.getX() - 50, ptUpperRight.getY() - 50),
         ground(ptUpperRight)
     {};
 
@@ -24,25 +24,29 @@ public:
 
 
 
-    //DEBUG
-    double landerDX = 0; // lander stating state
-    double landerDY = 0; // lander stating state
     double angle;         // angle the LM is pointing
-    bool applyThrust = false;
-    double fuel = 7777;
-    double speed = 77;
-    double altitude = 777;
+    static double fuel;
 
 
+    void decrementFuel();
 
-    void onScreenText(LanderState* landerInstance, Ground groundInstance); // Centerlize what text to place on screen
-    void updateControllerInputs(const Interface* pUI, LanderState* LanderInstance);
+
 
 };
 
 
 
+class UserInterface
+{
+public:
+    bool applyThrust = false;
 
+    void onScreenText(LanderState* landerInstance, Ground groundInstance); // Centerlize what text to place on screen
+    void updateControllerInputs(const Interface* pUI, LanderState* LanderInstance);
+    
+
+
+};
 
 
 
@@ -76,16 +80,12 @@ protected:
 
 
 
-
-
-
-
 class Physics
 {
 public:
 	void gravity(LanderState* LanderInstance);
     void applyIntertia(LanderState* LanderInstance);
-    void applyThrust(LanderState* LanderInstance);
+    void applyThrust(LanderState* LanderInstance, UserInterface* userInterfaceInstance);
     double totalVelocity();
 
 

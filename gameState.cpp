@@ -1,4 +1,18 @@
 /**********************************************************************
+*  * 1. Name:
+ *      Jonathan Gunderson, Dahal Sulav
+ * 2. Assignment Name:
+ *      Lab 02: Apollo 11
+ * 3. Assignment Description:
+ *      Simulate the Apollo 11 landing
+ * 4. What was the hardest part? Be as specific as possible.
+ *      -a paragraph or two about how the assignment went for you-
+ * 5. How long did it take for you to complete the assignment?
+ *      -total time in hours: reading the assignment, submitting, and writing code-
+ *****************************************************************/
+ /**********************************************************************
+
+* 
  * GL LanderState
  * Just a simple program to demonstrate how to create an Open GL window,
  * draw something on the window, and accept simple user input
@@ -43,25 +57,25 @@ void callBack(const Interface* pUI, void* p)
     // is the first step of every single callback function in OpenGL. 
     LanderState* landerInstance = (LanderState*)p;
     Ground groundInstance = landerInstance->ground;
-    Crash crashInstane;
-
+    UserInterface* userInterfaceInstance = (UserInterface*)p;
+    Crash crashInstance;
     Physics physics;
 
 
 
-    //Get altitude
-    crashInstane.altitude(groundInstance, landerInstance);
-
-
-
-    // move the ship around
-    landerInstance->updateControllerInputs(pUI, landerInstance);
+    
 
 
 
 
-    // draw the ground
-    landerInstance->ground.draw(gout);
+    userInterfaceInstance->updateControllerInputs(pUI, landerInstance);      // move the ship around
+    userInterfaceInstance->onScreenText(landerInstance, groundInstance);     // put some text on the screen
+
+
+
+    starInstance.showStars();     // draw our little star 
+
+    groundInstance.draw(gout);      // draw the ground
 
 
 
@@ -72,26 +86,10 @@ void callBack(const Interface* pUI, void* p)
 
 
 
-    // put some text on the screen
-    landerInstance->onScreenText(landerInstance, groundInstance);
-
-
-    // draw our little star 
-    //starInstance.showStars();
-    //starInstance->test();
-    starInstance.showStars();
-
-
-
-
     // Create the general physics effect of moon gravity.
     physics.gravity(landerInstance);
-
-    physics.applyThrust(landerInstance);
+    physics.applyThrust(landerInstance, userInterfaceInstance);
     physics.applyIntertia(landerInstance);
-
-
-
 
 
 
@@ -105,10 +103,22 @@ double Physics::x = 0;
 double Physics::y = 0;
 double Physics::dx = 0;
 double Physics::dy = 0;
+double LanderState::fuel = 7777;
 /*********************************
 * Declare static physics variables for simulator
  *********************************/
 
+
+
+ /*********************************
+ * Decrement the amount of fuel that
+ * is currently in the lander, Only 
+ * When the user applys thrust.
+  *********************************/
+void LanderState::decrementFuel()
+{
+    fuel--;
+}
 
 
 
@@ -116,7 +126,7 @@ double Physics::dy = 0;
 *
 * 
  *********************************/
-void LanderState::updateControllerInputs(const Interface* pUI, LanderState* landerInstance)
+void UserInterface::updateControllerInputs(const Interface* pUI, LanderState* landerInstance)
 {
     if (pUI->isRight())
         landerInstance->angle -= 0.1;
@@ -153,15 +163,27 @@ void Physics::applyIntertia(LanderState* landerInstance)
     landerInstance->ptLM.addX(dx * .03);
 }
 
-void Physics::applyThrust(LanderState* landerInstance)
+
+
+/*********************************
+*
+*
+ *********************************/
+void Physics::applyThrust(LanderState* landerInstance, UserInterface* userInterfaceInstance)
 {
-    if (landerInstance->applyThrust == true)
+    if (userInterfaceInstance->applyThrust == true)
     {
         dy += (cos(landerInstance->angle) * THRUST / WEIGHT);
         dx += ( - 1 * (sin(landerInstance->angle) * THRUST / WEIGHT));
+        landerInstance->decrementFuel();
     }
 }
 
+
+/*********************************
+*
+*
+ *********************************/
 double Physics::totalVelocity()
 {
     return sqrt(dx * dx + dy * dy) * .1;
@@ -169,8 +191,10 @@ double Physics::totalVelocity()
 
 
 
-
-
+/*********************************
+*
+*
+ *********************************/
 double Crash::altitude(Ground groundInstance, LanderState* landerInstance)
 {
     Point landerLocation(landerInstance->ptLM);
@@ -181,20 +205,14 @@ double Crash::altitude(Ground groundInstance, LanderState* landerInstance)
  * Plan on passing reading the values for the
  * onscreen text directly from the lander state.
  *********************************/
-void LanderState::onScreenText(LanderState* landerInstance, Ground groundInstance)
+void UserInterface::onScreenText(LanderState* landerInstance, Ground groundInstance)
 {
-      ogstream gout;
+    ogstream gout;
     gout.setPosition(Point(30.0, 550.0));
 
-    
-
-        gout << "Fuel:\t" << landerInstance->fuel << " lbs" << "\n"
+    gout << "Fuel:\t" << landerInstance->fuel << " lbs" << "\n"
         << "Altitude:\t" << Crash().altitude(groundInstance, landerInstance) <<" meters"<<  "\n"
         << "Speed:\t" << Physics().totalVelocity() << showpoint << fixed << setprecision(2) << " m/s";
-
-
-        landerInstance->fuel--;          // debug system ONLY
-        landerInstance->altitude++;        // debug system ONLY
 
 }
 
