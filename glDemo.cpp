@@ -1,5 +1,5 @@
 ///**********************************************************************
-// * GL LanderState
+// * GL GameState
 // * Just a simple program to demonstrate how to create an Open GL window, 
 // * draw something on the window, and accept simple user input
 // **********************************************************************/
@@ -12,13 +12,13 @@
 //using namespace std;
 //
 ///*************************************************************************
-// * LanderState
+// * GameState
 // * Test structure to capture the LM that will move around the screen
 // *************************************************************************/
-//class LanderState
+//class GameState
 //{
 //public:
-//   LanderState(const Point& ptUpperRight) :
+//   GameState(const Point& ptUpperRight) :
 //          angle(0.0),
 //          ptStar(ptUpperRight.getX() - 20.0, ptUpperRight.getY() - 20.0),
 //          ptLM(ptUpperRight.getX() / 2.0, ptUpperRight.getY() / 2.0),
@@ -50,7 +50,7 @@
 //
 //   // the first step is to cast the void pointer into a game object. This
 //   // is the first step of every single callback function in OpenGL. 
-//   LanderState * pDemo = (LanderState *)p;  
+//   GameState * pDemo = (GameState *)p;  
 //
 //   // move the ship around
 //   if (pUI->isRight())
@@ -72,21 +72,21 @@
 //
 //   // put some text on the screen
 //   gout.setPosition(Point(30.0, 30.0));
-//   gout << "LanderState (" << (int)pDemo->ptLM.getX() << ", " << (int)pDemo->ptLM.getY() << ")" << "\n";
+//   gout << "GameState (" << (int)pDemo->ptLM.getX() << ", " << (int)pDemo->ptLM.getY() << ")" << "\n";
 //
 //   // draw our little star
 //   gout.drawStar(pDemo->ptStar, pDemo->phase++);
 //
 //
 //
-//   Physics().gravity(LanderState * pDemo);
+//   Physics().gravity(GameState * pDemo);
 //
 //
 //}
 //
 ///*********************************
 // * Main is pretty sparse.  Just initialize
-// * my LanderState type and call the display engine.
+// * my GameState type and call the display engine.
 // * That is all!
 // *********************************/
 //#ifdef _WIN32_X
@@ -103,11 +103,11 @@
 //   // Initialize OpenGL
 //   Point ptUpperRight(400.0, 400.0);
 //   Interface ui(0, NULL, 
-//                "Open GL LanderState", 
+//                "Open GL GameState", 
 //                 ptUpperRight);
 //
 //   // Initialize the game class
-//   LanderState demo(ptUpperRight);
+//   GameState demo(ptUpperRight);
 //
 //   // set everything into action
 //   ui.run(callBack, &demo);             

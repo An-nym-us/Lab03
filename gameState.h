@@ -8,10 +8,10 @@
 
 #include <iostream>
 
-class LanderState 
+class GameState 
 {
 public:
-    LanderState(const Point& ptUpperRight) : 
+    GameState(const Point& ptUpperRight) : 
         angle(0.0),
         ptLM(ptUpperRight.getX() - 50, ptUpperRight.getY() - 50),
         ground(ptUpperRight)
@@ -23,15 +23,13 @@ public:
 
 
 
-
+    const int MOONLANDERWIDTH = 9.44; // width of the lander in meters
     double angle;         // angle the LM is pointing
     static double fuel;
+    bool endGame = false;
 
 
     void decrementFuel();
-
-
-
 };
 
 
@@ -41,10 +39,12 @@ class UserInterface
 public:
     bool applyThrust = false;
 
-    void onScreenText(LanderState* landerInstance, Ground groundInstance); // Centerlize what text to place on screen
-    void updateControllerInputs(const Interface* pUI, LanderState* LanderInstance);
+    void onScreenText(GameState* landerInstance, Ground groundInstance); // Centerlize what text to place on screen
+    void updateControllerInputs(const Interface* pUI, GameState* LanderInstance);
     
+private:
 
+protected:
 
 };
 
@@ -54,8 +54,10 @@ public:
 class Crash
 {
 public:
-    bool isInGround(LanderState * landerInstance);
-    double altitude(Ground groundInstance, LanderState* landerInstance);
+    bool crashedIntoGroundCheck(GameState * landerInstance, Ground groundInstance);
+    bool landedOnPlatformCheck(GameState* landerInstance, Ground groundInstance);
+    bool crashedIntoPlatform();
+    double altitude(Ground groundInstance, GameState* landerInstance);
 
 private:
 
@@ -83,9 +85,9 @@ protected:
 class Physics
 {
 public:
-	void gravity(LanderState* LanderInstance);
-    void applyIntertia(LanderState* LanderInstance);
-    void applyThrust(LanderState* LanderInstance, UserInterface* userInterfaceInstance);
+	void gravity(GameState* LanderInstance);
+    void applyIntertia(GameState* LanderInstance);
+    void applyThrust(GameState* LanderInstance, UserInterface* userInterfaceInstance);
     double totalVelocity();
 
 

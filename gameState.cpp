@@ -13,7 +13,7 @@
  /**********************************************************************
 
 * 
- * GL LanderState
+ * GL GameState
  * Just a simple program to demonstrate how to create an Open GL window,
  * draw something on the window, and accept simple user input
  **********************************************************************/
@@ -55,15 +55,23 @@ void callBack(const Interface* pUI, void* p)
 
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
-    LanderState* landerInstance = (LanderState*)p;
+    GameState* landerInstance = (GameState*)p;
     Ground groundInstance = landerInstance->ground;
     UserInterface* userInterfaceInstance = (UserInterface*)p;
     Crash crashInstance;
     Physics physics;
 
 
+    // Graphics and stuff.
+    groundInstance.draw(gout);   // draw our little star 
+    starInstance.showStars();      // draw the ground
 
-    
+        // draw the Physics and its flames
+    gout.drawLander(landerInstance->ptLM /*position*/, landerInstance->angle /*angle*/);
+    gout.drawLanderFlames(landerInstance->ptLM, landerInstance->angle, /*angle*/
+        pUI->isDown(), pUI->isLeft(), pUI->isRight());
+
+
 
 
 
@@ -73,25 +81,34 @@ void callBack(const Interface* pUI, void* p)
 
 
 
-    starInstance.showStars();     // draw our little star 
-
-    groundInstance.draw(gout);      // draw the ground
-
-
-
-    // draw the Physics and its flames
-    gout.drawLander(landerInstance->ptLM /*position*/, landerInstance->angle /*angle*/);
-    gout.drawLanderFlames(landerInstance->ptLM, landerInstance->angle, /*angle*/
-        pUI->isDown(), pUI->isLeft(), pUI->isRight());
-
-
-
     // Create the general physics effect of moon gravity.
     physics.gravity(landerInstance);
     physics.applyThrust(landerInstance, userInterfaceInstance);
     physics.applyIntertia(landerInstance);
 
 
+
+
+
+
+
+
+    // END GAME CHECK   
+    if ((crashInstance.crashedIntoGroundCheck(landerInstance, groundInstance)) || 
+        (
+            crashInstance.landedOnPlatformCheck(landerInstance, groundInstance) == true 
+            && 
+            crashInstance.crashedIntoPlatform() == true // ensure player did not hit the plateform at a speed greater 5 m/s
+        ))
+    {
+        // DEBUG
+        cout << "you loose" << endl;
+    }
+    else if (crashInstance.landedOnPlatformCheck(landerInstance, groundInstance))
+    {
+        //DEBUG
+        cout << "You Win" << endl;
+    }
 
 }
 
@@ -103,7 +120,7 @@ double Physics::x = 0;
 double Physics::y = 0;
 double Physics::dx = 0;
 double Physics::dy = 0;
-double LanderState::fuel = 7777;
+double GameState::fuel = 7777;
 /*********************************
 * Declare static physics variables for simulator
  *********************************/
@@ -115,7 +132,7 @@ double LanderState::fuel = 7777;
  * is currently in the lander, Only 
  * When the user applys thrust.
   *********************************/
-void LanderState::decrementFuel()
+void GameState::decrementFuel()
 {
     fuel--;
 }
@@ -126,7 +143,7 @@ void LanderState::decrementFuel()
 *
 * 
  *********************************/
-void UserInterface::updateControllerInputs(const Interface* pUI, LanderState* landerInstance)
+void UserInterface::updateControllerInputs(const Interface* pUI, GameState* landerInstance)
 {
     if (pUI->isRight())
         landerInstance->angle -= 0.1;
@@ -146,7 +163,7 @@ void UserInterface::updateControllerInputs(const Interface* pUI, LanderState* la
 * The lander will be constantly
 * Pulled Down.
  *********************************/
-void Physics::gravity(LanderState* landerState)
+void Physics::gravity(GameState* landerState)
 {
     dy += GRAVITY;
 }
@@ -155,7 +172,7 @@ void Physics::gravity(LanderState* landerState)
 *
 *
  *********************************/
-void Physics::applyIntertia(LanderState* landerInstance)
+void Physics::applyIntertia(GameState* landerInstance)
 {
     x += dx;
     y += dy;
@@ -169,7 +186,7 @@ void Physics::applyIntertia(LanderState* landerInstance)
 *
 *
  *********************************/
-void Physics::applyThrust(LanderState* landerInstance, UserInterface* userInterfaceInstance)
+void Physics::applyThrust(GameState* landerInstance, UserInterface* userInterfaceInstance)
 {
     if (userInterfaceInstance->applyThrust == true)
     {
@@ -195,17 +212,35 @@ double Physics::totalVelocity()
 *
 *
  *********************************/
-double Crash::altitude(Ground groundInstance, LanderState* landerInstance)
+double Crash::altitude(Ground groundInstance, GameState* landerInstance)
 {
     Point landerLocation(landerInstance->ptLM);
     return groundInstance.getElevation(landerLocation);
 }
 
+
+/*********************************
+*
+*
+ *********************************/
+bool Crash::crashedIntoPlatform()
+{
+    if (Physics().totalVelocity() > 5.0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 /*********************************
  * Plan on passing reading the values for the
  * onscreen text directly from the lander state.
  *********************************/
-void UserInterface::onScreenText(LanderState* landerInstance, Ground groundInstance)
+void UserInterface::onScreenText(GameState* landerInstance, Ground groundInstance)
 {
     ogstream gout;
     gout.setPosition(Point(30.0, 550.0));
@@ -213,7 +248,6 @@ void UserInterface::onScreenText(LanderState* landerInstance, Ground groundInsta
     gout << "Fuel:\t" << landerInstance->fuel << " lbs" << "\n"
         << "Altitude:\t" << Crash().altitude(groundInstance, landerInstance) <<" meters"<<  "\n"
         << "Speed:\t" << Physics().totalVelocity() << showpoint << fixed << setprecision(2) << " m/s";
-
 }
 
 
@@ -249,6 +283,24 @@ void Stars::showStars()
 
 
 
+/*********************************
+*
+*
+ *********************************/
+bool Crash::crashedIntoGroundCheck(GameState* landerInstance, Ground groundInstance)
+{
+    return groundInstance.hitGround(landerInstance->ptLM, landerInstance->MOONLANDERWIDTH);
+}
+
+
+/*********************************
+*
+*
+ *********************************/
+bool Crash::landedOnPlatformCheck(GameState* landerInstance, Ground groundInstance)
+{ 
+    return groundInstance.onPlatform(landerInstance->ptLM, landerInstance->MOONLANDERWIDTH);
+}
 
 
 
@@ -258,7 +310,7 @@ void Stars::showStars()
 
 /*********************************
  * Main is pretty sparse.  Just initialize
- * my LanderState type and call the display engine.
+ * my GameState type and call the display engine.
  * That is all!
  *********************************/
 #ifdef _WIN32_X
@@ -279,7 +331,7 @@ int main(int argc, char** argv)
         ptUpperRight);
 
     // Initialize the game class
-    LanderState demo(ptUpperRight);
+    GameState demo(ptUpperRight);
 
 
     // set everything into action

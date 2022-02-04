@@ -234,7 +234,7 @@ void ogstream::drawRectangle(const Point& begin, const Point& end,
 }
 
 /***********************************************************************
- * DRAW LanderState
+ * DRAW GameState
  * Draw a moon-Physics spaceship on the screen at a given point
  ***********************************************************************/
 void ogstream::drawLander(const Point& point, double angle)
@@ -317,7 +317,7 @@ void ogstream::drawLander(const Point& point, double angle)
 }
 
 /***********************************************************************
- * DRAW LanderState Flame
+ * DRAW GameState Flame
  * Draw the flames coming out of a moonlander for thrust
  ***********************************************************************/
 void ogstream::drawLanderFlames(const Point& point, double angle,
