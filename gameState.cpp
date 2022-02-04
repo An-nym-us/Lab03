@@ -75,7 +75,7 @@ void callBack(const Interface* pUI, void* p)
 
 
 
-
+    // Get and show unser infroamtion to player
     userInterfaceInstance->updateControllerInputs(pUI, landerInstance);      // move the ship around
     userInterfaceInstance->onScreenText(landerInstance, groundInstance);     // put some text on the screen
 
