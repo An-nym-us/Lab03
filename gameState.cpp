@@ -14,16 +14,16 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-
+#include <vector>
 #include <string>
 #include <iomanip>
 #include <sstream>
 #include <format>
-#include <vector>
+
 
 
 using namespace std;
-
+static Stars starInstance;
 
 
 /*************************************
@@ -42,17 +42,21 @@ void callBack(const Interface* pUI, void* p)
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
     LanderState* landerInstance = (LanderState*)p;
-    Stars starInstance;
+    Ground groundInstance = landerInstance->ground;
+    Crash crashInstane;
 
     Physics physics;
 
 
 
+    //Get altitude
+    crashInstane.altitude(groundInstance, landerInstance);
 
 
 
     // move the ship around
     landerInstance->updateControllerInputs(pUI, landerInstance);
+
 
 
 
@@ -69,10 +73,12 @@ void callBack(const Interface* pUI, void* p)
 
 
     // put some text on the screen
-    landerInstance->onScreenText(landerInstance);
+    landerInstance->onScreenText(landerInstance, groundInstance);
 
 
     // draw our little star 
+    //starInstance.showStars();
+    //starInstance->test();
     starInstance.showStars();
 
 
@@ -125,7 +131,27 @@ void LanderState::updateControllerInputs(const Interface* pUI, LanderState* land
 }
 
 
+/*********************************
+* Create The effect of Gravity
+* The lander will be constantly
+* Pulled Down.
+ *********************************/
+void Physics::gravity(LanderState* landerState)
+{
+    dy += GRAVITY;
+}
 
+/*********************************
+*
+*
+ *********************************/
+void Physics::applyIntertia(LanderState* landerInstance)
+{
+    x += dx;
+    y += dy;
+    landerInstance->ptLM.addY(dy * .03);
+    landerInstance->ptLM.addX(dx * .03);
+}
 
 void Physics::applyThrust(LanderState* landerInstance)
 {
@@ -134,25 +160,28 @@ void Physics::applyThrust(LanderState* landerInstance)
         dy += (cos(landerInstance->angle) * THRUST / WEIGHT);
         dx += ( - 1 * (sin(landerInstance->angle) * THRUST / WEIGHT));
     }
-
-
-
 }
-
-
 
 double Physics::totalVelocity()
 {
-    return sqrt(dx * dx + dy * dy);
+    return sqrt(dx * dx + dy * dy) * .1;
 }
 
 
+
+
+
+double Crash::altitude(Ground groundInstance, LanderState* landerInstance)
+{
+    Point landerLocation(landerInstance->ptLM);
+    return groundInstance.getElevation(landerLocation);
+}
 
 /*********************************
  * Plan on passing reading the values for the
  * onscreen text directly from the lander state.
  *********************************/
-void LanderState::onScreenText(LanderState* landerInstance)
+void LanderState::onScreenText(LanderState* landerInstance, Ground groundInstance)
 {
       ogstream gout;
     gout.setPosition(Point(30.0, 550.0));
@@ -160,12 +189,11 @@ void LanderState::onScreenText(LanderState* landerInstance)
     
 
         gout << "Fuel:\t" << landerInstance->fuel << " lbs" << "\n"
-        << "Altitude:\t" << landerInstance->altitude <<" meters"<<  "\n"
-        << "Speed:\t" << landerInstance->speed << showpoint << fixed << setprecision(2) << " m/s";
+        << "Altitude:\t" << Crash().altitude(groundInstance, landerInstance) <<" meters"<<  "\n"
+        << "Speed:\t" << Physics().totalVelocity() << showpoint << fixed << setprecision(2) << " m/s";
 
 
         landerInstance->fuel--;          // debug system ONLY
-        landerInstance->speed++;         // debug system ONLY
         landerInstance->altitude++;        // debug system ONLY
 
 }
@@ -183,51 +211,28 @@ void Stars::showStars()
     vector<Point> points;
     int x[51] = {40,50,60,70,100,20,10,120,150,160,190,200,220,230,240,250,260,270,300,350,360,390,400,410, 450,460,480,500,310,320,480,500,510};
     int y[51] = {400,500,600,410,420,510,520,450,500,600,530,240,560,450,460,490,520,300,330,350,280,290,300,303,403,503,499,599,299,399,320,480,550};
+    int z[52] = { 40,50,60,70,100,20,10,120,150,160,190,200,220,230,240,250,20,244,0,10,400,40,60, 45,460,0,50,255,200,200,50,80 };
     
 //    Point test; // create random on screen postions for the stars
 //    Point test2(100,401);
     for(int i=0; i <31; i++){
         Point test(x[i],y[i]);
         points.push_back(test);
-      
     }
     
     
-    for(int i=0; i < points.size(); i++){
-        gout.drawStar(points[i], random(0,255));
+    for(int i=0; i < points.size(); i++)
+    {
+        int currentPhase = z[i] + phase;
+        gout.drawStar(points[i], currentPhase);
+        phase++;
     }
-    
-    
 }
 
 
 
 
-/*********************************
-* Create The effect of Gravity 
-* The lander will be constantly 
-* Pulled Down.
- *********************************/
-void Physics::gravity(LanderState* landerState)
-{
-    dy += GRAVITY;
 
-}
-
-
-/*********************************
-*
-*
- *********************************/
-void Physics::applyIntertia(LanderState* landerInstance)
-{
-    x += dx ;
-    y += dy ;
-    landerInstance->ptLM.addY(dy * .1);
-    landerInstance->ptLM.addX(dx * .1);
-
-
-}
 
 
 

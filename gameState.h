@@ -3,6 +3,8 @@
 #include "uiInteract.h"
 #include "uiDraw.h"
 #include "ground.h"
+#include <vector>
+#include <random>
 
 #include <iostream>
 
@@ -17,7 +19,6 @@ public:
 
     Point ptLM;           // location of the LM on the screen
     Point ptUpperRight;   // size of the screen
-
     Ground ground;
 
 
@@ -34,10 +35,12 @@ public:
 
 
 
-    void onScreenText(LanderState* landerInstance); // Centerlize what text to place on screen
+    void onScreenText(LanderState* landerInstance, Ground groundInstance); // Centerlize what text to place on screen
     void updateControllerInputs(const Interface* pUI, LanderState* LanderInstance);
 
 };
+
+
 
 
 
@@ -48,6 +51,7 @@ class Crash
 {
 public:
     bool isInGround(LanderState * landerInstance);
+    double altitude(Ground groundInstance, LanderState* landerInstance);
 
 private:
 
@@ -62,6 +66,9 @@ public:
     void showStars();
 
 private:
+    unsigned char phase;
+    Point location;
+    ogstream starsOut;
 
 protected:
 
@@ -70,17 +77,16 @@ protected:
 
 
 
+
+
+
 class Physics
 {
 public:
-
-
 	void gravity(LanderState* LanderInstance);
     void applyIntertia(LanderState* LanderInstance);
     void applyThrust(LanderState* LanderInstance);
     double totalVelocity();
-
-
 
 
 private:
