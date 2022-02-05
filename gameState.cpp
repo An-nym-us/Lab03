@@ -93,12 +93,12 @@ void callBack(const Interface* pUI, void* p)
         ))
     {
 
-        userInterfaceInstance->endGameSessionInformation(false);  // Display to user that they LOST the game.
+        GameStateInstance->endGameSessionInformation(false);  // Display to user that they LOST the game.
     }
     else if (crashInstance.landedOnPlatformCheck(GameStateInstance, groundInstance))
     {
 
-        userInterfaceInstance->endGameSessionInformation(true);// Display to user that they WON the game.
+        GameStateInstance->endGameSessionInformation(true);// Display to user that they WON the game.
     }
     else
     {
@@ -216,7 +216,7 @@ double Physics::totalVelocity()
 *
 *
  *********************************/
-double Crash::altitude(Ground groundInstance, GameState* GameStateInstance)
+double UserInterface::altitudeToGround(Ground groundInstance, GameState* GameStateInstance)
 {
     Point landerLocation(GameStateInstance->ptLM);
     return groundInstance.getElevation(landerLocation);
@@ -229,7 +229,7 @@ double Crash::altitude(Ground groundInstance, GameState* GameStateInstance)
 *
 *
  *********************************/
-void UserInterface::endGameSessionInformation(bool endCondition)
+void GameState::endGameSessionInformation(bool endCondition)
 {
     ogstream endGameSessionInformationOut;
     endGameSessionInformationOut.setPosition(Point(250, 400.0));
@@ -256,7 +256,7 @@ void UserInterface::onScreenStats(GameState* GameStateInstance, Ground groundIns
     gout.setPosition(Point(30.0, 550.0));
 
     gout << "Fuel:\t" << GameStateInstance->fuel << " lbs" << "\n"
-        << "Altitude:\t" << Crash().altitude(groundInstance, GameStateInstance) <<" meters"<<  "\n"
+        << "Altitude:\t" << UserInterface().altitudeToGround(groundInstance, GameStateInstance) << " meters" << "\n"
         << "Speed:\t" << Physics().totalVelocity() << showpoint << fixed << setprecision(2) << " m/s";
 }
 

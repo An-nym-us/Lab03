@@ -28,7 +28,7 @@ public:
     static double fuel;
     bool endGame = false;
 
-
+    void endGameSessionInformation(bool endCondition);
     void decrementFuel();
 };
 
@@ -41,12 +41,10 @@ public:
 
     void onScreenStats(GameState* landerInstance, Ground groundInstance); // Centerlize what text to place on screen
     void updateControllerInputs(const Interface* pUI, GameState* LanderInstance);
-    void endGameSessionInformation(bool endCondition);
+    double altitudeToGround(Ground groundInstance, GameState* landerInstance);
     
 private:
-
 protected:
-
 };
 
 
@@ -59,10 +57,9 @@ public:
     bool landedOnPlatformCheck(GameState* landerInstance, Ground groundInstance);
     bool crashedIntoPlatform();
     bool isFuelEmpty(GameState* GameStateInstance);
-    double altitude(Ground groundInstance, GameState* landerInstance);
+
 
 private:
-
 protected:
 };
 
@@ -79,7 +76,6 @@ private:
     ogstream starsOut;
 
 protected:
-
 };
 
 
