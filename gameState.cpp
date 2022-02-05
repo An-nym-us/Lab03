@@ -68,27 +68,15 @@ void callBack(const Interface* pUI, void* p)
     groundInstance.draw(gout);   // draw our little star 
     starInstance.showStars();      // draw the ground
 
-        // draw the Physics and its flames
-    gout.drawLander(GameStateInstance->ptLM /*position*/, GameStateInstance->angle /*angle*/);
-    gout.drawLanderFlames(GameStateInstance->ptLM, GameStateInstance->angle, /*angle*/
-        pUI->isDown(), pUI->isLeft(), pUI->isRight());
 
 
-
-
-
-    // Get and show unser infroamtion to player
-    userInterfaceInstance->updateControllerInputs(pUI, GameStateInstance);      // move the ship around
+    // Get and show user infomation player
     userInterfaceInstance->onScreenStats(GameStateInstance, groundInstance);     // put some text on the screen
 
 
 
-    // Create the general physics effect of moon gravity.
-    physics.gravity();
-    physics.applyThrust(GameStateInstance, userInterfaceInstance);
-    physics.applyIntertia(GameStateInstance);
-
-
+     // draw the Lander
+    gout.drawLander(GameStateInstance->ptLM /*position*/, GameStateInstance->angle /*angle*/);
 
 
 
@@ -99,22 +87,31 @@ void callBack(const Interface* pUI, void* p)
     if ((crashInstance.crashedIntoGroundCheck(GameStateInstance, groundInstance)) || 
         crashInstance.isFuelEmpty(GameStateInstance) == true ||
         (
-            crashInstance.landedOnPlatformCheck(GameStateInstance, groundInstance) == true 
+            crashInstance.landedOnPlatformCheck(GameStateInstance, groundInstance) == true // Check if they landed on the platform.
             && 
             crashInstance.crashedIntoPlatform() == true // ensure player did not hit the plateform at a speed greater 5 m/s
         ))
     {
-        // DEBUG
-        cout << "you loose" << endl;
-        userInterfaceInstance->endGameSessionInformation(false);
 
-       
+        userInterfaceInstance->endGameSessionInformation(false);  // Display to user that they LOST the game.
     }
     else if (crashInstance.landedOnPlatformCheck(GameStateInstance, groundInstance))
     {
-        //DEBUG
-        cout << "You Win" << endl;
-        userInterfaceInstance->endGameSessionInformation(true);
+
+        userInterfaceInstance->endGameSessionInformation(true);// Display to user that they WON the game.
+    }
+    else
+    {
+        // Create the general physics effect of moon gravity.
+        physics.gravity();
+        physics.applyThrust(GameStateInstance, userInterfaceInstance);
+        physics.applyIntertia(GameStateInstance);
+
+        userInterfaceInstance->updateControllerInputs(pUI, GameStateInstance);      // move the ship around
+
+        // draw lander flames
+        gout.drawLanderFlames(GameStateInstance->ptLM, GameStateInstance->angle, /*angle*/
+            pUI->isDown(), pUI->isLeft(), pUI->isRight());
     }
     
 }
