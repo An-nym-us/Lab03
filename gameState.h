@@ -39,8 +39,9 @@ class UserInterface
 public:
     bool applyThrust = false;
 
-    void onScreenText(GameState* landerInstance, Ground groundInstance); // Centerlize what text to place on screen
+    void onScreenStats(GameState* landerInstance, Ground groundInstance); // Centerlize what text to place on screen
     void updateControllerInputs(const Interface* pUI, GameState* LanderInstance);
+    void endGameSessionInformation(bool endCondition);
     
 private:
 
@@ -57,6 +58,7 @@ public:
     bool crashedIntoGroundCheck(GameState * landerInstance, Ground groundInstance);
     bool landedOnPlatformCheck(GameState* landerInstance, Ground groundInstance);
     bool crashedIntoPlatform();
+    bool isFuelEmpty(GameState* GameStateInstance);
     double altitude(Ground groundInstance, GameState* landerInstance);
 
 private:
@@ -85,7 +87,7 @@ protected:
 class Physics
 {
 public:
-	void gravity(GameState* LanderInstance);
+	void gravity();
     void applyIntertia(GameState* LanderInstance);
     void applyThrust(GameState* LanderInstance, UserInterface* userInterfaceInstance);
     double totalVelocity();
