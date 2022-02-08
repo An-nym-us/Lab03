@@ -180,6 +180,10 @@ void Physics::applyIntertia(GameState* GameStateInstance)
 {
     x += dx;
     y += dy;
+    //  
+    // replace  "s = s + v"  integrate "s = s + vt + 1/2 at^2"
+
+
     GameStateInstance->ptLM.addY(dy * .03);
     GameStateInstance->ptLM.addX(dx * .03);
 }

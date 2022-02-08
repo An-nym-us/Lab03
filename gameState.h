@@ -19,20 +19,20 @@ public:
 
 
 
-    Point ptLM;           // location of the LM on the screen
+            Point ptLM;           // location of the LM on the screen
     Point ptUpperRight;   // size of the screen
     Ground ground;
 
 
 
-    const int MOONLANDERWIDTH = 9.44; // width of the lander in meters
-    double angle;         // angle the LM is pointing
-    static double fuel;
+            const int MOONLANDERWIDTH = 9.44; // width of the lander in meters
+            double angle;         // angle the LM is pointing
+            static double fuel;
     bool endGame = false;
 
     void endGameSessionInformation(bool endCondition);
     
-    //void decrementFuel();
+                void decrementFuel();
 };
 
 
@@ -42,12 +42,26 @@ class Lander
 public:
     bool applyThrust = false;
 
+
+
+
     void onScreenStats(GameState* landerInstance, Ground groundInstance); // Centerlize what text to place on screen
     void updateControllerInputs(const Interface* pUI, GameState* LanderInstance);
     double altitudeToGround(Ground groundInstance, GameState* landerInstance);
-    
+    //static double fuel;
 
-    void decrementFuel();
+    //const int MOONLANDERWIDTH = 9.44; // width of the lander in meters
+   // double angle;         // angle the LM is pointing
+    //Point ptLM;
+
+
+    //void decrementFuel();
+
+    //static double x;
+    //static double y;
+    //double angle = 0;
+    //const double WEIGHT = 15103.00;
+    //const double THRUST = 45000.00;
 private:
 protected:
 };
@@ -87,7 +101,7 @@ protected:
 
 class Thrust
 {
-    void applyThrust(GameState* LanderInstance, Lander* Lander);
+    //void applyThrust(GameState* LanderInstance, Lander* Lander);
 };
 
 
@@ -97,24 +111,24 @@ class Physics
 public:
 	void gravity();
     void applyIntertia(GameState* LanderInstance);
-    //void applyThrust(GameState* LanderInstance, Lander* Lander);
+                void applyThrust(GameState* LanderInstance, Lander* Lander);
     double totalVelocity();
 
 
 private:
 
     // Declare static variables.
-    static double x;
-    static double y;
+                static double x;
+                static double y;
     static double dx;
     static double dy;
 
 
     // Decalre Normal variables.
-    double angle = 0;
-    const double WEIGHT = 15103.00;
+                double angle = 0;
+                const double WEIGHT = 15103.00;
+                const double THRUST = 45000.00;
     const double GRAVITY = -1.625;
-    const double THRUST = 45000.00;
     double time = 0;
 
 
