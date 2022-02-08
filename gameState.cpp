@@ -39,7 +39,7 @@
 
 
 using namespace std;
-static Stars starInstance;
+static Star starInstance;
 
 
 /*************************************
@@ -59,14 +59,14 @@ void callBack(const Interface* pUI, void* p)
     // is the first step of every single callback function in OpenGL. 
     GameState* GameStateInstance = (GameState*)p;
     Ground groundInstance = GameStateInstance->ground;
-    UserInterface* userInterfaceInstance = (UserInterface*)p;
+    Lander* userInterfaceInstance = (Lander*)p;
     Crash crashInstance;
     Physics physics;
 
 
     // Graphics and stuff.
     groundInstance.draw(gout);   // draw our little star 
-    starInstance.showStars();      // draw the ground
+    starInstance.show();      // draw the ground
 
 
 
@@ -147,7 +147,7 @@ void GameState::decrementFuel()
 *
 * 
  *********************************/
-void UserInterface::updateControllerInputs(const Interface* pUI, GameState* GameStateInstance)
+void Lander::updateControllerInputs(const Interface* pUI, GameState* GameStateInstance)
 {
     if (pUI->isRight())
         GameStateInstance->angle -= 0.1;
@@ -190,9 +190,9 @@ void Physics::applyIntertia(GameState* GameStateInstance)
 *
 *
  *********************************/
-void Physics::applyThrust(GameState* GameStateInstance, UserInterface* userInterfaceInstance)
+void Physics::applyThrust(GameState* GameStateInstance, Lander* Lander)
 {
-    if (userInterfaceInstance->applyThrust == true)
+    if (Lander->applyThrust == true)
     {
         dy += (cos(GameStateInstance->angle) * THRUST / WEIGHT);
         dx += ( - 1 * (sin(GameStateInstance->angle) * THRUST / WEIGHT));
@@ -216,7 +216,7 @@ double Physics::totalVelocity()
 *
 *
  *********************************/
-double UserInterface::altitudeToGround(Ground groundInstance, GameState* GameStateInstance)
+double Lander::altitudeToGround(Ground groundInstance, GameState* GameStateInstance)
 {
     Point landerLocation(GameStateInstance->ptLM);
     return groundInstance.getElevation(landerLocation);
@@ -250,13 +250,13 @@ void GameState::endGameSessionInformation(bool endCondition)
  * Plan on passing reading the values for the
  * onscreen text directly from the lander state.
  *********************************/
-void UserInterface::onScreenStats(GameState* GameStateInstance, Ground groundInstance)
+void Lander::onScreenStats(GameState* GameStateInstance, Ground groundInstance)
 {
     ogstream gout;
     gout.setPosition(Point(30.0, 550.0));
 
     gout << "Fuel:\t" << GameStateInstance->fuel << " lbs" << "\n"
-        << "Altitude:\t" << UserInterface().altitudeToGround(groundInstance, GameStateInstance) << " meters" << "\n"
+        << "Altitude:\t" << Lander().altitudeToGround(groundInstance, GameStateInstance) << " meters" << "\n"
         << "Speed:\t" << Physics().totalVelocity() << showpoint << fixed << setprecision(2) << " m/s";
 }
 
@@ -266,7 +266,7 @@ void UserInterface::onScreenStats(GameState* GameStateInstance, Ground groundIns
 * of the stars on the screen above 
 * the ground.
  *********************************/
-void Stars::showStars()
+void Star::show()
 {
    ogstream gout;
     

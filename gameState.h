@@ -17,6 +17,8 @@ public:
         ground(ptUpperRight)
     {};
 
+
+
     Point ptLM;           // location of the LM on the screen
     Point ptUpperRight;   // size of the screen
     Ground ground;
@@ -29,12 +31,13 @@ public:
     bool endGame = false;
 
     void endGameSessionInformation(bool endCondition);
-    void decrementFuel();
+    
+    //void decrementFuel();
 };
 
 
 
-class UserInterface
+class Lander
 {
 public:
     bool applyThrust = false;
@@ -43,6 +46,8 @@ public:
     void updateControllerInputs(const Interface* pUI, GameState* LanderInstance);
     double altitudeToGround(Ground groundInstance, GameState* landerInstance);
     
+
+    void decrementFuel();
 private:
 protected:
 };
@@ -65,10 +70,10 @@ protected:
 
 
 
-class Stars
+class Star
 {
 public:
-    void showStars();
+    void show();
 
 private:
     unsigned char phase;
@@ -80,12 +85,19 @@ protected:
 
 
 
+class Thrust
+{
+    void applyThrust(GameState* LanderInstance, Lander* Lander);
+};
+
+
+
 class Physics
 {
 public:
 	void gravity();
     void applyIntertia(GameState* LanderInstance);
-    void applyThrust(GameState* LanderInstance, UserInterface* userInterfaceInstance);
+    //void applyThrust(GameState* LanderInstance, Lander* Lander);
     double totalVelocity();
 
 
