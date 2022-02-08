@@ -12,7 +12,7 @@ class GameState
 {
 public:
     GameState(const Point& ptUpperRight) : 
-        angle(0.0),
+
         ptLM(ptUpperRight.getX() - 50, ptUpperRight.getY() - 50),
         ground(ptUpperRight)
     {};
@@ -25,45 +25,51 @@ public:
 
 
 
-            const int MOONLANDERWIDTH = 9.44; // width of the lander in meters
-            double angle;         // angle the LM is pointing
-            static double fuel;
+
+
     bool endGame = false;
 
     void endGameSessionInformation(bool endCondition);
     
-                void decrementFuel();
+
 };
 
 
 
 class Lander
 {
-public:
+public:        
+
+    Lander() //:
+
+    {
+
+    };
+
+
+
+
+
+    void onScreenStats(GameState* gameInstance, Ground groundInstance); // Centerlize what text to place on screen
+    void updateControllerInputs(const Interface* pUI, GameState* gameInstance, Lander* landerInstance);
+    double altitudeToGround(Ground groundInstance, GameState* landerInstance);
+
+    void decrementFuel();
+
+
+
+    static double fuel;
+    static double x;
+    static double y;
+    static double angle;
     bool applyThrust = false;
 
+    const int MOONLANDERWIDTH = 9.44; // width of the lander in meters
+    const double WEIGHT = 15103.00;
+    const double THRUST = 45000.00;
 
-
-
-    void onScreenStats(GameState* landerInstance, Ground groundInstance); // Centerlize what text to place on screen
-    void updateControllerInputs(const Interface* pUI, GameState* LanderInstance);
-    double altitudeToGround(Ground groundInstance, GameState* landerInstance);
-    //static double fuel;
-
-    //const int MOONLANDERWIDTH = 9.44; // width of the lander in meters
-   // double angle;         // angle the LM is pointing
-    //Point ptLM;
-
-
-    //void decrementFuel();
-
-    //static double x;
-    //static double y;
-    //double angle = 0;
-    //const double WEIGHT = 15103.00;
-    //const double THRUST = 45000.00;
 private:
-protected:
+    
 };
 
 
@@ -72,6 +78,7 @@ protected:
 class Crash
 {
 public:
+
     bool crashedIntoGroundCheck(GameState * landerInstance, Ground groundInstance);
     bool landedOnPlatformCheck(GameState* landerInstance, Ground groundInstance);
     bool crashedIntoPlatform();
@@ -79,7 +86,7 @@ public:
 
 
 private:
-protected:
+
 };
 
 
@@ -101,7 +108,8 @@ protected:
 
 class Thrust
 {
-    //void applyThrust(GameState* LanderInstance, Lander* Lander);
+public:
+    void applyThrust(Lander* landerInstance, GameState* gameInstance);
 };
 
 
@@ -110,24 +118,19 @@ class Physics
 {
 public:
 	void gravity();
-    void applyIntertia(GameState* LanderInstance);
-                void applyThrust(GameState* LanderInstance, Lander* Lander);
+    void applyIntertia(GameState* GameInstance, Lander* landerInstance);
+
     double totalVelocity();
 
 
-private:
-
-    // Declare static variables.
-                static double x;
-                static double y;
     static double dx;
     static double dy;
 
+private:
+
 
     // Decalre Normal variables.
-                double angle = 0;
-                const double WEIGHT = 15103.00;
-                const double THRUST = 45000.00;
+
     const double GRAVITY = -1.625;
     double time = 0;
 

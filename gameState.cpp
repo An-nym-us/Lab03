@@ -59,9 +59,9 @@ void callBack(const Interface* pUI, void* p)
     // is the first step of every single callback function in OpenGL. 
     GameState* GameStateInstance = (GameState*)p;
     Ground groundInstance = GameStateInstance->ground;
-    Lander* userInterfaceInstance = (Lander*)p;
+    Lander* landerInstance = (Lander*)p;
     Crash crashInstance;
-    Physics physics;
+
 
 
     // Graphics and stuff.
@@ -71,12 +71,12 @@ void callBack(const Interface* pUI, void* p)
 
 
     // Get and show user infomation player
-    userInterfaceInstance->onScreenStats(GameStateInstance, groundInstance);     // put some text on the screen
+    landerInstance->onScreenStats(GameStateInstance, groundInstance);     // put some text on the screen
 
 
 
      // draw the Lander
-    gout.drawLander(GameStateInstance->ptLM /*position*/, GameStateInstance->angle /*angle*/);
+    gout.drawLander(GameStateInstance->ptLM /*position*/, landerInstance->angle /*angle*/);
 
 
 
@@ -86,13 +86,11 @@ void callBack(const Interface* pUI, void* p)
     // END GAME CHECK   
     if ((crashInstance.crashedIntoGroundCheck(GameStateInstance, groundInstance)) || 
         crashInstance.isFuelEmpty(GameStateInstance) == true ||
-        (
-            crashInstance.landedOnPlatformCheck(GameStateInstance, groundInstance) == true // Check if they landed on the platform.
+        (crashInstance.landedOnPlatformCheck(GameStateInstance, groundInstance) == true // Check if they landed on the platform.
             && 
             crashInstance.crashedIntoPlatform() == true // ensure player did not hit the plateform at a speed greater 5 m/s
         ))
     {
-
         GameStateInstance->endGameSessionInformation(false);  // Display to user that they LOST the game.
     }
     else if (crashInstance.landedOnPlatformCheck(GameStateInstance, groundInstance))
@@ -103,14 +101,18 @@ void callBack(const Interface* pUI, void* p)
     else
     {
         // Create the general physics effect of moon gravity.
-        physics.gravity();
-        physics.applyThrust(GameStateInstance, userInterfaceInstance);
-        physics.applyIntertia(GameStateInstance);
+        Physics().gravity();
+        Physics().applyIntertia(GameStateInstance, landerInstance);
 
-        userInterfaceInstance->updateControllerInputs(pUI, GameStateInstance);      // move the ship around
+        Thrust().applyThrust(landerInstance, GameStateInstance);
+
+
+        landerInstance->updateControllerInputs(pUI, GameStateInstance, landerInstance);      // move the ship around
+
+
 
         // draw lander flames
-        gout.drawLanderFlames(GameStateInstance->ptLM, GameStateInstance->angle, /*angle*/
+        gout.drawLanderFlames(GameStateInstance->ptLM, landerInstance->angle, /*angle*/
             pUI->isDown(), pUI->isLeft(), pUI->isRight());
     }
     
@@ -120,11 +122,12 @@ void callBack(const Interface* pUI, void* p)
 /*********************************
 * Declare static physics variables for simulator
  *********************************/
-double Physics::x = 0;
-double Physics::y = 0;
+double Lander::x = 0;
+double Lander::y = 0;
+double Lander::angle = 0;
 double Physics::dx = 0;
 double Physics::dy = 0;
-double GameState::fuel = 7777;
+double Lander::fuel = 7777;
 /*********************************
 * Declare static physics variables for simulator
  *********************************/
@@ -136,9 +139,9 @@ double GameState::fuel = 7777;
  * is currently in the lander, Only 
  * When the user applys thrust.
   *********************************/
-void GameState::decrementFuel()
+void Lander::decrementFuel()
 {
-    fuel--;
+    this->fuel--;
 }
 
 
@@ -147,14 +150,14 @@ void GameState::decrementFuel()
 *
 * 
  *********************************/
-void Lander::updateControllerInputs(const Interface* pUI, GameState* GameStateInstance)
+void Lander::updateControllerInputs(const Interface* pUI, GameState* gameInstance, Lander* landerInstance)
 {
     if (pUI->isRight())
-        GameStateInstance->angle -= 0.1;
+        landerInstance->angle -= 0.1;
     if (pUI->isLeft())
-        GameStateInstance->angle += 0.1;
-    if (pUI->isUp())
-        GameStateInstance->ptLM.addY(-1.0);
+        landerInstance->angle += 0.1;
+    //if (pUI->isUp())
+        //GameStateInstance->ptLM.addY(-1.0);
     if (pUI->isDown())
         applyThrust = true;
     else
@@ -176,16 +179,16 @@ void Physics::gravity()
 *
 *
  *********************************/
-void Physics::applyIntertia(GameState* GameStateInstance)
+void Physics::applyIntertia(GameState* GameStateInstance, Lander* landerInstance)
 {
-    x += dx;
-    y += dy;
+    landerInstance->x += dx;
+    landerInstance->y += dy;
     //  
     // replace  "s = s + v"  integrate "s = s + vt + 1/2 at^2"
 
 
-    GameStateInstance->ptLM.addY(dy * .03);
-    GameStateInstance->ptLM.addX(dx * .03);
+    GameStateInstance->ptLM.addY(dy * .01);
+    GameStateInstance->ptLM.addX(dx * .01);
 }
 
 
@@ -194,13 +197,14 @@ void Physics::applyIntertia(GameState* GameStateInstance)
 *
 *
  *********************************/
-void Physics::applyThrust(GameState* GameStateInstance, Lander* Lander)
+void Thrust::applyThrust(Lander* landerInstance, GameState* gameInstance)
 {
-    if (Lander->applyThrust == true)
+    if (landerInstance->applyThrust == true)
     {
-        dy += (cos(GameStateInstance->angle) * THRUST / WEIGHT);
-        dx += ( - 1 * (sin(GameStateInstance->angle) * THRUST / WEIGHT));
-        GameStateInstance->decrementFuel();
+        Physics().dy += (cos(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT);
+        cout << Physics().dy << endl;
+        Physics().dx += ( - 1 * (sin(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT));
+        landerInstance->decrementFuel();
     }
 }
 
@@ -259,7 +263,7 @@ void Lander::onScreenStats(GameState* GameStateInstance, Ground groundInstance)
     ogstream gout;
     gout.setPosition(Point(30.0, 550.0));
 
-    gout << "Fuel:\t" << GameStateInstance->fuel << " lbs" << "\n"
+    gout << "Fuel:\t" << Lander().fuel << " lbs" << "\n"
         << "Altitude:\t" << Lander().altitudeToGround(groundInstance, GameStateInstance) << " meters" << "\n"
         << "Speed:\t" << Physics().totalVelocity() << showpoint << fixed << setprecision(2) << " m/s";
 }
@@ -303,7 +307,7 @@ void Star::show()
  *********************************/
 bool Crash::crashedIntoGroundCheck(GameState* GameStateInstance, Ground groundInstance)
 {
-    return groundInstance.hitGround(GameStateInstance->ptLM, GameStateInstance->MOONLANDERWIDTH);
+    return groundInstance.hitGround(GameStateInstance->ptLM, Lander().MOONLANDERWIDTH);
 }
 
 
@@ -313,7 +317,7 @@ bool Crash::crashedIntoGroundCheck(GameState* GameStateInstance, Ground groundIn
  *********************************/
 bool Crash::landedOnPlatformCheck(GameState* GameStateInstance, Ground groundInstance)
 { 
-    return groundInstance.onPlatform(GameStateInstance->ptLM, GameStateInstance->MOONLANDERWIDTH);
+    return groundInstance.onPlatform(GameStateInstance->ptLM, Lander().MOONLANDERWIDTH);
 }
 
 
@@ -342,7 +346,7 @@ bool Crash::crashedIntoPlatform()
  *********************************/
 bool Crash::isFuelEmpty(GameState* GameStateInstance)
 {
-    if (GameStateInstance->fuel <= 0.0)
+    if (Lander().fuel <= 0.0)
     {
         return true;
     }
