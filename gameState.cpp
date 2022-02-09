@@ -78,7 +78,6 @@ void callBack(const Interface* pUI, void* p)
      // draw the Lander
     gout.drawLander(GameStateInstance->ptLM /*position*/, landerInstance->angle /*angle*/);
 
-    //cout << landerInstance->ptLM << endl;
 
 
 
@@ -103,10 +102,7 @@ void callBack(const Interface* pUI, void* p)
         // Create the general physics effect of moon gravity.
         Physics().gravity();
         Physics().applyIntertia(GameStateInstance, landerInstance);
-
-        Thrust().applyThrust(landerInstance);
-
-
+        Thrust().getThrust(landerInstance);
         landerInstance->updateControllerInputs(pUI, landerInstance);      // move the ship around
 
 
@@ -144,7 +140,10 @@ void Lander::decrementFuel()
     this->fuel--;
 }
 
-
+void Lander::setThrust(bool thrust)
+{
+    applyThrust = thrust;
+}
 
 /*********************************
 *
@@ -159,9 +158,9 @@ void Lander::updateControllerInputs(const Interface* pUI, Lander* landerInstance
     //if (pUI->isUp())
         //GameStateInstance->ptLM.addY(-1.0);
     if (pUI->isDown())
-        this->applyThrust = true;
+        landerInstance->setThrust(true);
     else
-        this->applyThrust = false;
+        landerInstance->setThrust(false);
 
 }
 
@@ -198,7 +197,7 @@ void Physics::applyIntertia(GameState* GameStateInstance, Lander* landerInstance
 *
 *
  *********************************/
-void Thrust::applyThrust(Lander* landerInstance)
+void Thrust::getThrust(Lander* landerInstance)
 {
     cout  << landerInstance->getThrust() << endl;
     if (landerInstance->getThrust() == true)

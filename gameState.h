@@ -19,15 +19,15 @@ public:
 
 
 
-            Point ptLM;           // location of the LM on the screen
+    Point ptLM;           // location of the LM on the screen
     Point ptUpperRight;   // size of the screen
     Ground ground;
 
 
 
 
-
     bool endGame = false;
+
 
     void endGameSessionInformation(bool endCondition);
     
@@ -50,7 +50,9 @@ public:
     double altitudeToGround(Ground groundInstance, GameState* landerInstance);
 
     void decrementFuel();
+
     bool getThrust() { return applyThrust; }
+    void setThrust(bool thrust);
 
 
     
@@ -109,7 +111,7 @@ protected:
 class Thrust
 {
 public:
-    void applyThrust(Lander* landerInstance);
+    void getThrust(Lander* landerInstance);
 };
 
 
