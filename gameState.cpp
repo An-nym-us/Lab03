@@ -61,7 +61,7 @@ void callBack(const Interface* pUI, void* p)
     Ground groundInstance = GameStateInstance->ground;
     Lander* landerInstance = (Lander*)p;
     Crash crashInstance;
-
+    
 
 
     // Graphics and stuff.
@@ -78,7 +78,7 @@ void callBack(const Interface* pUI, void* p)
      // draw the Lander
     gout.drawLander(GameStateInstance->ptLM /*position*/, landerInstance->angle /*angle*/);
 
-
+    //cout << landerInstance->ptLM << endl;
 
 
 
@@ -104,10 +104,10 @@ void callBack(const Interface* pUI, void* p)
         Physics().gravity();
         Physics().applyIntertia(GameStateInstance, landerInstance);
 
-        Thrust().applyThrust(landerInstance, GameStateInstance);
+        Thrust().applyThrust(landerInstance);
 
 
-        landerInstance->updateControllerInputs(pUI, GameStateInstance, landerInstance);      // move the ship around
+        landerInstance->updateControllerInputs(pUI, landerInstance);      // move the ship around
 
 
 
@@ -150,7 +150,7 @@ void Lander::decrementFuel()
 *
 * 
  *********************************/
-void Lander::updateControllerInputs(const Interface* pUI, GameState* gameInstance, Lander* landerInstance)
+void Lander::updateControllerInputs(const Interface* pUI, Lander* landerInstance)
 {
     if (pUI->isRight())
         landerInstance->angle -= 0.1;
@@ -159,9 +159,10 @@ void Lander::updateControllerInputs(const Interface* pUI, GameState* gameInstanc
     //if (pUI->isUp())
         //GameStateInstance->ptLM.addY(-1.0);
     if (pUI->isDown())
-        applyThrust = true;
+        this->applyThrust = true;
     else
-        applyThrust = false;
+        this->applyThrust = false;
+
 }
 
 
@@ -197,13 +198,15 @@ void Physics::applyIntertia(GameState* GameStateInstance, Lander* landerInstance
 *
 *
  *********************************/
-void Thrust::applyThrust(Lander* landerInstance, GameState* gameInstance)
+void Thrust::applyThrust(Lander* landerInstance)
 {
-    if (landerInstance->applyThrust == true)
+    cout  << landerInstance->getThrust() << endl;
+    if (landerInstance->getThrust() == true)
     {
         Physics().dy += (cos(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT);
-        cout << Physics().dy << endl;
+        //cout << Physics().dy << endl;
         Physics().dx += ( - 1 * (sin(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT));
+
         landerInstance->decrementFuel();
     }
 }
@@ -382,6 +385,7 @@ int main(int argc, char** argv)
 
     // Initialize the game class
     GameState demo(ptUpperRight);
+
 
 
     // set everything into action
