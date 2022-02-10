@@ -4,7 +4,7 @@
 class Crash
 {
 public:
-    bool landerCrashed();
+    bool landerCrashed(GameState* GameStateInstance);
 
 
 private:
