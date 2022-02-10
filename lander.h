@@ -14,11 +14,6 @@ class Lander
 {
 public:
 
-    void updateControllerInputs(const Interface* pUI, Lander* landerInstance);
-
-
-    void decrementFuel();
-
     bool getThrust() { return applyThrust; }
     void setThrust(bool thrust);
     void applyThrustEffect(Lander* landerInstance);
@@ -37,5 +32,7 @@ public:
     const double THRUST = 45000.00;
 
 private:
+
     bool applyThrust = false;
+    void decrementFuel();
 };

@@ -8,6 +8,7 @@
 class Physics
 {
 public:
+
     void gravity();
     void applyIntertia(GameState* GameInstance);
     double totalVelocity();
@@ -17,10 +18,6 @@ public:
     static double dy;
 
 private:
-
-
-    // Declare Normal variables.
-
     const double GRAVITY = -1.625;
 
 

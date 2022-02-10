@@ -27,20 +27,29 @@ public:
 
     Ground& const getGroundInstance() { return ground; }
     Point& const getptLMInstance() { return ptLM; }
-    Lander& const getLanderInstance() { return lander; }
+    //Lander& const getLanderInstance()  { return  lander ; }
 
+
+
+
+    void updateControllerInputs(const Interface* pUI, Lander* landerInstance);
+    void onScreenStats(); // Centerlize what text to place on screen
     void endGameSessionInformation(bool endCondition);
-    void onScreenStats(Ground groundInstance); // Centerlize what text to place on screen
+    double altitudeToGround();
 
 private:
+
+
+
 
     Point ptLM;           // location of the LM on the screen
     Point ptUpperRight;   // size of the screen
     Ground ground;
-    Lander lander;
+
+    //Lander lander;
 
 
-   // Crash crashing;
+
     
 
 

@@ -1,17 +1,24 @@
 #pragma once
 
 #include "gameState.h"
+
+enum playState { win, lose, resume };
+
 class Crash
 {
 public:
-    bool landerCrashed(GameState* GameStateInstance);
+    void landerCrashed(playState &currentstate, GameState* GameStateInstance) ;
+
 
 
 private:
-    double altitudeToGround(Ground groundInstance, GameState* GameStateInstance);
-    bool crashedIntoGroundCheck(GameState* GameStateInstance, Ground groundInstance);
-    bool landedOnPlatformCheck(GameState* GameStateInstance, Ground groundInstance);
+    bool crashedIntoGroundCheck(GameState* GameStateInstance);
+    bool landedOnPlatformCheck(GameState* GameStateInstance);
     bool crashedIntoPlatform();
-    bool isFuelEmpty(GameState* GameStateInstance);
+    bool isFuelEmpty();
+
+
 
 };
+
+
