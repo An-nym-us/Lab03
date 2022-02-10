@@ -21,15 +21,19 @@
   <ItemGroup>
     <ClCompile Include="glDemo.cpp" />
     <ClCompile Include="ground.cpp" />
-    <ClCompile Include="gameState.cpp" />
+    <ClCompile Include="Lab6Main.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="uiDraw.cpp" />
     <ClCompile Include="uiInteract.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="crash.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="gameState.h" />
+    <ClInclude Include="lander.h" />
+    <ClInclude Include="physics.h" />
     <ClInclude Include="point.h" />
+    <ClInclude Include="star.h" />
     <ClInclude Include="uiDraw.h" />
     <ClInclude Include="uiInteract.h" />
   </ItemGroup>

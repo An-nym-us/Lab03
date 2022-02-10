@@ -22,7 +22,17 @@
 #include "uiInteract.h"
 #include "uiDraw.h"
 #include "ground.h"
+
+
+#include "crash.h"
 #include "gameState.h"
+#include "lander.h"
+#include "physics.h"
+#include "star.h"
+
+
+
+
 #include <iostream>
 #include <ctime>
 #include <stdlib.h>
@@ -58,7 +68,7 @@ void callBack(const Interface* pUI, void* p)
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
     GameState* GameStateInstance = (GameState*)p;
-    Ground groundInstance = GameStateInstance->ground;
+    Ground groundInstance = GameStateInstance->getGroundInstance();
     Lander* landerInstance = (Lander*)p;
     Crash crashInstance;
     
@@ -76,7 +86,7 @@ void callBack(const Interface* pUI, void* p)
 
 
      // draw the Lander
-    gout.drawLander(GameStateInstance->ptLM /*position*/, landerInstance->angle /*angle*/);
+    gout.drawLander(GameStateInstance->getptLMInstance() /*position*/, landerInstance->angle /*angle*/);
 
 
 
@@ -102,13 +112,13 @@ void callBack(const Interface* pUI, void* p)
         // Create the general physics effect of moon gravity.
         Physics().gravity();
         Physics().applyIntertia(GameStateInstance, landerInstance);
-        Thrust().getThrust(landerInstance);
+        Lander().getThrust(landerInstance);
         landerInstance->updateControllerInputs(pUI, landerInstance);      // move the ship around
 
 
 
         // draw lander flames
-        gout.drawLanderFlames(GameStateInstance->ptLM, landerInstance->angle, /*angle*/
+        gout.drawLanderFlames(GameStateInstance->getptLMInstance(), landerInstance->angle, /*angle*/
             pUI->isDown(), pUI->isLeft(), pUI->isRight());
     }
     
@@ -187,8 +197,8 @@ void Physics::applyIntertia(GameState* GameStateInstance, Lander* landerInstance
     // replace  "s = s + v"  integrate "s = s + vt + 1/2 at^2"
 
 
-    GameStateInstance->ptLM.addY(dy * .01);
-    GameStateInstance->ptLM.addX(dx * .01);
+    GameStateInstance->getptLMInstance().addY(dy * .01);
+    GameStateInstance->getptLMInstance().addX(dx * .01);
 }
 
 
@@ -197,7 +207,7 @@ void Physics::applyIntertia(GameState* GameStateInstance, Lander* landerInstance
 *
 *
  *********************************/
-void Thrust::getThrust(Lander* landerInstance)
+void Lander::getThrust(Lander* landerInstance)
 {
     cout  << landerInstance->getThrust() << endl;
     if (landerInstance->getThrust() == true)
@@ -228,7 +238,7 @@ double Physics::totalVelocity()
  *********************************/
 double Lander::altitudeToGround(Ground groundInstance, GameState* GameStateInstance)
 {
-    Point landerLocation(GameStateInstance->ptLM);
+    Point landerLocation(GameStateInstance->getptLMInstance());
     return groundInstance.getElevation(landerLocation);
 }
 
@@ -309,7 +319,7 @@ void Star::show()
  *********************************/
 bool Crash::crashedIntoGroundCheck(GameState* GameStateInstance, Ground groundInstance)
 {
-    return groundInstance.hitGround(GameStateInstance->ptLM, Lander().MOONLANDERWIDTH);
+    return groundInstance.hitGround(GameStateInstance->getptLMInstance(), Lander().MOONLANDERWIDTH);
 }
 
 
@@ -319,7 +329,7 @@ bool Crash::crashedIntoGroundCheck(GameState* GameStateInstance, Ground groundIn
  *********************************/
 bool Crash::landedOnPlatformCheck(GameState* GameStateInstance, Ground groundInstance)
 { 
-    return groundInstance.onPlatform(GameStateInstance->ptLM, Lander().MOONLANDERWIDTH);
+    return groundInstance.onPlatform(GameStateInstance->getptLMInstance(), Lander().MOONLANDERWIDTH);
 }
 
 
