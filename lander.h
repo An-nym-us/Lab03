@@ -4,11 +4,9 @@
 #include "uiInteract.h"
 #include "uiDraw.h"
 #include "ground.h"
-
-
 #include "gameState.h"
 
-#include <iostream>
+
 
 
 
@@ -17,7 +15,7 @@ class Lander
 public:
     void onScreenStats(GameState* gameInstance, Ground groundInstance); // Centerlize what text to place on screen
     void updateControllerInputs(const Interface* pUI, Lander* landerInstance);
-    double altitudeToGround(Ground groundInstance, GameState* landerInstance);
+
 
     void decrementFuel();
 

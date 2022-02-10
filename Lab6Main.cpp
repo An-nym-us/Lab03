@@ -61,31 +61,26 @@ static Star starInstance;
  **************************************/
 void callBack(const Interface* pUI, void* p)
 {
-    
-    
     ogstream gout;
 
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
     GameState* GameStateInstance = (GameState*)p;
-    Ground groundInstance = GameStateInstance->getGroundInstance();
     Lander* landerInstance = (Lander*)p;
     Crash crashInstance;
     
 
 
-    // Graphics and stuff.
-    groundInstance.draw(gout);   // draw our little star 
-    starInstance.show();      // draw the ground
+
+    GameStateInstance->getGroundInstance().draw(gout);   // draw our little star 
+    starInstance.show();      
+
+
+    landerInstance->onScreenStats(GameStateInstance, GameStateInstance->getGroundInstance());     // put some text on the screen
 
 
 
-    // Get and show user infomation player
-    landerInstance->onScreenStats(GameStateInstance, groundInstance);     // put some text on the screen
 
-
-
-     // draw the Lander
     gout.drawLander(GameStateInstance->getptLMInstance() /*position*/, landerInstance->angle /*angle*/);
 
 
@@ -93,18 +88,17 @@ void callBack(const Interface* pUI, void* p)
 
 
     // END GAME CHECK   
-    if ((crashInstance.crashedIntoGroundCheck(GameStateInstance, groundInstance)) || 
+    if ((crashInstance.crashedIntoGroundCheck(GameStateInstance, GameStateInstance->getGroundInstance())) ||
         crashInstance.isFuelEmpty(GameStateInstance) == true ||
-        (crashInstance.landedOnPlatformCheck(GameStateInstance, groundInstance) == true // Check if they landed on the platform.
+        (crashInstance.landedOnPlatformCheck(GameStateInstance, GameStateInstance->getGroundInstance()) == true // Check if they landed on the platform.
             && 
             crashInstance.crashedIntoPlatform() == true // ensure player did not hit the plateform at a speed greater 5 m/s
         ))
     {
         GameStateInstance->endGameSessionInformation(false);  // Display to user that they LOST the game.
     }
-    else if (crashInstance.landedOnPlatformCheck(GameStateInstance, groundInstance))
+    else if (crashInstance.landedOnPlatformCheck(GameStateInstance, GameStateInstance->getGroundInstance()))
     {
-
         GameStateInstance->endGameSessionInformation(true);// Display to user that they WON the game.
     }
     else
@@ -236,7 +230,7 @@ double Physics::totalVelocity()
 *
 *
  *********************************/
-double Lander::altitudeToGround(Ground groundInstance, GameState* GameStateInstance)
+double Crash::altitudeToGround(Ground groundInstance, GameState* GameStateInstance)
 {
     Point landerLocation(GameStateInstance->getptLMInstance());
     return groundInstance.getElevation(landerLocation);
@@ -276,7 +270,7 @@ void Lander::onScreenStats(GameState* GameStateInstance, Ground groundInstance)
     gout.setPosition(Point(30.0, 550.0));
 
     gout << "Fuel:\t" << Lander().fuel << " lbs" << "\n"
-        << "Altitude:\t" << Lander().altitudeToGround(groundInstance, GameStateInstance) << " meters" << "\n"
+        << "Altitude:\t" << Crash().altitudeToGround(groundInstance, GameStateInstance) << " meters" << "\n"
         << "Speed:\t" << Physics().totalVelocity() << showpoint << fixed << setprecision(2) << " m/s";
 }
 

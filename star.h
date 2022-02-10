@@ -12,5 +12,5 @@ private:
     Point location;
     ogstream starsOut;
 
-protected:
+
 };

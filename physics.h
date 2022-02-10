@@ -20,14 +20,14 @@ public:
 private:
 
 
-    // Decalre Normal variables.
+    // Declare Normal variables.
 
     const double GRAVITY = -1.625;
 
 
 
 
-protected:
+
 
 
 };

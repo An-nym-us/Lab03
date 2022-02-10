@@ -1,23 +1,23 @@
 #pragma once
 #include "point.h"
+#include "crash.h"
 #include "uiInteract.h"
 #include "uiDraw.h"
 #include "ground.h"
 
-#include <vector>
-#include <random>
 
-#include <iostream>
+
 
 
 class GameState 
 {
 public:
     GameState(const Point& ptUpperRight) :
-
         ptLM(ptUpperRight.getX() - 50, ptUpperRight.getY() - 50),
         ground(ptUpperRight)
-    {};
+    {    };
+
+
 
 
     bool endGame = false;
@@ -26,7 +26,6 @@ public:
     Ground& getGroundInstance() { return ground; }
     Point& getptLMInstance() { return ptLM; }
     void endGameSessionInformation(bool endCondition);
-
 
 private:
 
