@@ -13,7 +13,7 @@
 class Lander
 {
 public:
-    void onScreenStats(GameState* gameInstance, Ground groundInstance); // Centerlize what text to place on screen
+
     void updateControllerInputs(const Interface* pUI, Lander* landerInstance);
 
 
@@ -21,7 +21,7 @@ public:
 
     bool getThrust() { return applyThrust; }
     void setThrust(bool thrust);
-    void getThrust(Lander* landerInstance);
+    void applyThrustEffect(Lander* landerInstance);
 
 
 

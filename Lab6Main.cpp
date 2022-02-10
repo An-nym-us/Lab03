@@ -76,11 +76,7 @@ void callBack(const Interface* pUI, void* p)
     starInstance.show();      
 
 
-    landerInstance->onScreenStats(GameStateInstance, GameStateInstance->getGroundInstance());     // put some text on the screen
-
-
-
-
+    GameStateInstance->onScreenStats(GameStateInstance->getGroundInstance());     // put some text on the screen
     gout.drawLander(GameStateInstance->getptLMInstance() /*position*/, landerInstance->angle /*angle*/);
 
 
@@ -106,7 +102,7 @@ void callBack(const Interface* pUI, void* p)
         // Create the general physics effect of moon gravity.
         Physics().gravity();
         Physics().applyIntertia(GameStateInstance, landerInstance);
-        Lander().getThrust(landerInstance);
+        Lander().applyThrustEffect(landerInstance);
         landerInstance->updateControllerInputs(pUI, landerInstance);      // move the ship around
 
 
@@ -201,13 +197,12 @@ void Physics::applyIntertia(GameState* GameStateInstance, Lander* landerInstance
 *
 *
  *********************************/
-void Lander::getThrust(Lander* landerInstance)
+void Lander::applyThrustEffect(Lander* landerInstance)
 {
-    cout  << landerInstance->getThrust() << endl;
     if (landerInstance->getThrust() == true)
     {
         Physics().dy += (cos(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT);
-        //cout << Physics().dy << endl;
+
         Physics().dx += ( - 1 * (sin(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT));
 
         landerInstance->decrementFuel();
@@ -264,13 +259,13 @@ void GameState::endGameSessionInformation(bool endCondition)
  * Plan on passing reading the values for the
  * onscreen text directly from the lander state.
  *********************************/
-void Lander::onScreenStats(GameState* GameStateInstance, Ground groundInstance)
+void GameState::onScreenStats(Ground groundInstance)
 {
     ogstream gout;
     gout.setPosition(Point(30.0, 550.0));
 
     gout << "Fuel:\t" << Lander().fuel << " lbs" << "\n"
-        << "Altitude:\t" << Crash().altitudeToGround(groundInstance, GameStateInstance) << " meters" << "\n"
+        << "Altitude:\t" << Crash().altitudeToGround(groundInstance, this) << " meters" << "\n"
         << "Speed:\t" << Physics().totalVelocity() << showpoint << fixed << setprecision(2) << " m/s";
 }
 

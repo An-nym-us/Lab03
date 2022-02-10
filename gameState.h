@@ -25,7 +25,9 @@ public:
 
     Ground& getGroundInstance() { return ground; }
     Point& getptLMInstance() { return ptLM; }
+
     void endGameSessionInformation(bool endCondition);
+    void onScreenStats(Ground groundInstance); // Centerlize what text to place on screen
 
 private:
 
