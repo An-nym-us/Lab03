@@ -4,7 +4,7 @@
 class Crash
 {
 public:
-    bool endGame();
+    bool landerCrashed();
 
 
 private:
