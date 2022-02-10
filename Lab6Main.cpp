@@ -82,6 +82,14 @@ void callBack(const Interface* pUI, void* p)
     gout.drawLander(GameStateInstance->getptLMInstance() /*position*/, landerInstance->angle /*angle*/);
 
 
+    //if (Integrate endgame function into a single function )
+    //    {
+
+    //    }
+    //else
+    //{ 
+    //}
+
 
 
 

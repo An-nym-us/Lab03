@@ -4,11 +4,13 @@
 class Crash
 {
 public:
+    bool endGame();
 
 
-    double altitudeToGround(Ground groundInstance, GameState* landerInstance);
-    bool crashedIntoGroundCheck(GameState* landerInstance, Ground groundInstance);
-    bool landedOnPlatformCheck(GameState* landerInstance, Ground groundInstance);
+private:
+    double altitudeToGround(Ground groundInstance, GameState* GameStateInstance);
+    bool crashedIntoGroundCheck(GameState* GameStateInstance, Ground groundInstance);
+    bool landedOnPlatformCheck(GameState* GameStateInstance, Ground groundInstance);
     bool crashedIntoPlatform();
     bool isFuelEmpty(GameState* GameStateInstance);
 
