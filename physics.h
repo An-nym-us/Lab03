@@ -9,8 +9,7 @@ class Physics
 {
 public:
     void gravity();
-    void applyIntertia(GameState* GameInstance, Lander* landerInstance);
-
+    void applyIntertia(GameState* GameInstance);
     double totalVelocity();
 
 

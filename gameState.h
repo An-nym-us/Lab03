@@ -4,6 +4,8 @@
 #include "uiInteract.h"
 #include "uiDraw.h"
 #include "ground.h"
+#include "lander.h"
+#include "crash.h"
 
 
 
@@ -23,8 +25,9 @@ public:
     bool endGame = false;
 
 
-    Ground& getGroundInstance() { return ground; }
-    Point& getptLMInstance() { return ptLM; }
+    Ground& const getGroundInstance() { return ground; }
+    Point& const getptLMInstance() { return ptLM; }
+    Lander& const getLanderInstance() { return lander; }
 
     void endGameSessionInformation(bool endCondition);
     void onScreenStats(Ground groundInstance); // Centerlize what text to place on screen
@@ -34,8 +37,11 @@ private:
     Point ptLM;           // location of the LM on the screen
     Point ptUpperRight;   // size of the screen
     Ground ground;
+    Lander lander;
 
 
+   // Crash crashing;
+    
 
 
     

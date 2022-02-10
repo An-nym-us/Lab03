@@ -66,6 +66,8 @@ void callBack(const Interface* pUI, void* p)
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
     GameState* GameStateInstance = (GameState*)p;
+    //GameStateInstance->getLanderInstance
+
     Lander* landerInstance = (Lander*)p;
     Crash crashInstance;
     
@@ -101,7 +103,7 @@ void callBack(const Interface* pUI, void* p)
     {
         // Create the general physics effect of moon gravity.
         Physics().gravity();
-        Physics().applyIntertia(GameStateInstance, landerInstance);
+        Physics().applyIntertia(GameStateInstance);
         Lander().applyThrustEffect(landerInstance);
         landerInstance->updateControllerInputs(pUI, landerInstance);      // move the ship around
 
@@ -118,12 +120,13 @@ void callBack(const Interface* pUI, void* p)
 /*********************************
 * Declare static physics variables for simulator
  *********************************/
-double Lander::x = 0;
-double Lander::y = 0;
+double Lander::x = 550;
+double Lander::y = 550;
 double Lander::angle = 0;
+double Lander::fuel = 7777;
 double Physics::dx = 0;
 double Physics::dy = 0;
-double Lander::fuel = 7777;
+
 /*********************************
 * Declare static physics variables for simulator
  *********************************/
@@ -172,23 +175,32 @@ void Lander::updateControllerInputs(const Interface* pUI, Lander* landerInstance
  *********************************/
 void Physics::gravity()
 {
-    dy += GRAVITY;
+    dy += GRAVITY *.1;
 }
 
 /*********************************
 *
 *
  *********************************/
-void Physics::applyIntertia(GameState* GameStateInstance, Lander* landerInstance)
+void Physics::applyIntertia(GameState* GameStateInstance)
 {
-    landerInstance->x += dx;
-    landerInstance->y += dy;
-    //  
+    //landerInstance->x += dx * .1;
+    //landerInstance->y += dy *.1;
+    //GameStateInstance->getptLMInstance().setX(landerInstance->x);
+    //GameStateInstance->getptLMInstance().setY(landerInstance->y);
+
+
+        //  
     // replace  "s = s + v"  integrate "s = s + vt + 1/2 at^2"
 
 
-    GameStateInstance->getptLMInstance().addY(dy * .01);
-    GameStateInstance->getptLMInstance().addX(dx * .01);
+    GameStateInstance->getptLMInstance().setX(( GameStateInstance->getptLMInstance().getX() + dx));
+    GameStateInstance->getptLMInstance().setY(( GameStateInstance->getptLMInstance().getY() + dy));
+
+
+
+
+
 }
 
 
@@ -201,9 +213,9 @@ void Lander::applyThrustEffect(Lander* landerInstance)
 {
     if (landerInstance->getThrust() == true)
     {
-        Physics().dy += (cos(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT);
+        Physics().dy += (cos(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT) *.1;
 
-        Physics().dx += ( - 1 * (sin(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT));
+        Physics().dx += ( - 1 * (sin(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT)) *.1;
 
         landerInstance->decrementFuel();
     }
