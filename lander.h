@@ -13,26 +13,39 @@
 class Lander
 {
 public:
+    Lander() :
+        ptLM(550, 550)
+    {};
 
+    
     bool getThrust() { return applyThrust; }
     void setThrust(bool thrust);
-    void applyThrustEffect(Lander* landerInstance);
+    void applyThrustEffect();
+    double getAngle() { return angle; }
+    void setAngle(double angle) { this->angle = angle; }
+
+
+    Point& const getptLMInstance() { return ptLM; }
 
 
 
 
-    static double fuel;
-    static double x;
-    static double y;
-    static double angle;
+
+    double getFuelStatus() { return fuel; }
 
 
     const int MOONLANDERWIDTH = 9.44; // width of the lander in meters
     const double WEIGHT = 15103.00;
     const double THRUST = 45000.00;
 
+
+
 private:
 
+
+    Point ptLM;           // location of the LM on the screen
+    double fuel = 777;
+    static double angle;
     bool applyThrust = false;
     void decrementFuel();
 };

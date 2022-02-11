@@ -15,7 +15,6 @@ class GameState
 {
 public:
     GameState(const Point& ptUpperRight) :
-        ptLM(ptUpperRight.getX() - 50, ptUpperRight.getY() - 50),
         ground(ptUpperRight)
     {    };
 
@@ -24,25 +23,19 @@ public:
 
     bool endGame = false;
 
-
     Ground& const getGroundInstance() { return ground; }
-    Point& const getptLMInstance() { return ptLM; }
-
-
-
-
-
-    void updateControllerInputs(const Interface* pUI, Lander* landerInstance);
+    void updateControllerInputs(const Interface* pUI);
     void onScreenStats(); // Centerlize what text to place on screen
     void endGameSessionInformation(bool endCondition);
     double altitudeToGround();
+
+
+
 
 private:
 
 
 
-
-    Point ptLM;           // location of the LM on the screen
     Point ptUpperRight;   // size of the screen
     Ground ground;
 

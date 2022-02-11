@@ -1,6 +1,6 @@
 /***********************************************************************
  * Header File:
- *    Ground : Represents the ground in the lunar Physics game
+ *    Ground : Represents the ground in the lunar EnvironmentalForces game
  * Author:
  *    Br. Helfrich
  * Summary:

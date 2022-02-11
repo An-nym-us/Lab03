@@ -8,7 +8,7 @@
 //#include "uiInteract.h"
 //#include "uiDraw.h"
 //#include "ground.h"
-//#include "Physics.h"
+//#include "EnvironmentalForces.h"
 //using namespace std;
 //
 ///*************************************************************************
@@ -65,7 +65,7 @@
 //   // draw the ground
 //   pDemo->ground.draw(gout);
 //
-//   // draw the Physics and its flames
+//   // draw the EnvironmentalForces and its flames
 //   gout.drawLander(pDemo->ptLM /*position*/, pDemo->angle /*angle*/);
 //   gout.drawLanderFlames(pDemo->ptLM, pDemo->angle, /*angle*/
 //                    pUI->isDown(), pUI->isLeft(), pUI->isRight());
@@ -79,7 +79,7 @@
 //
 //
 //
-//   Physics().gravity(GameState * pDemo);
+//   EnvironmentalForces().gravity(GameState * pDemo);
 //
 //
 //}

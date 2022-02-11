@@ -5,7 +5,7 @@
 
 
 
-class Physics
+class EnvironmentalForces
 {
 public:
 
@@ -13,14 +13,14 @@ public:
     void applyIntertia(GameState* GameInstance);
     double totalVelocity();
 
-
-    static double dx;
-    static double dy;
     static double ddx;
     static double ddy;
 
+
 private:
     const double GRAVITY = -1.625;
+    static double dx;
+    static double dy;
 
 
 

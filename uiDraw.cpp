@@ -235,7 +235,7 @@ void ogstream::drawRectangle(const Point& begin, const Point& end,
 
 /***********************************************************************
  * DRAW GameState
- * Draw a moon-Physics spaceship on the screen at a given point
+ * Draw a moon-EnvironmentalForces spaceship on the screen at a given point
  ***********************************************************************/
 void ogstream::drawLander(const Point& point, double angle)
 {
