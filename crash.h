@@ -9,16 +9,11 @@ class Crash
 public:
     void landerCrashed(playState &currentstate, GameState* GameStateInstance) ;
 
-
-
 private:
     bool crashedIntoGroundCheck(GameState* GameStateInstance);
     bool landedOnPlatformCheck(GameState* GameStateInstance);
     bool crashedIntoPlatform();
     bool isFuelEmpty();
-
-
-
 };
 
 

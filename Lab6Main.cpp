@@ -189,7 +189,7 @@ void Physics::applyIntertia(GameState* GameStateInstance)
 
     dx = ddx * .1;
     dy = ddy * .1;
-    // replace  "s = s + v"  integrate "s = s + vt + 1/2 at^2"
+
     double storestateX = (GameStateInstance->getptLMInstance().getX());
     double storestateY = (GameStateInstance->getptLMInstance().getY());
 
