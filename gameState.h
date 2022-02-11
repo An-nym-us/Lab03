@@ -27,7 +27,7 @@ public:
 
     Ground& const getGroundInstance() { return ground; }
     Point& const getptLMInstance() { return ptLM; }
-    //Lander& const getLanderInstance()  { return  lander ; }
+
 
 
 
@@ -46,7 +46,6 @@ private:
     Point ptUpperRight;   // size of the screen
     Ground ground;
 
-    //Lander lander;
 
 
 

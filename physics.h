@@ -9,13 +9,15 @@ class Physics
 {
 public:
 
-    void gravity();
+    void applyGravity();
     void applyIntertia(GameState* GameInstance);
     double totalVelocity();
 
 
     static double dx;
     static double dy;
+    static double ddx;
+    static double ddy;
 
 private:
     const double GRAVITY = -1.625;

@@ -95,7 +95,7 @@ void callBack(const Interface* pUI, void* p)
     }
     else
     { 
-        Physics().gravity();
+        Physics().applyGravity();
         Physics().applyIntertia(GameStateInstance);
         Lander().applyThrustEffect(landerInstance);
         GameStateInstance->updateControllerInputs(pUI, landerInstance);      // move the ship around
@@ -125,6 +125,8 @@ double Lander::angle = 0;
 double Lander::fuel = 7777;
 double Physics::dx = 0;
 double Physics::dy = 0;
+double Physics::ddx = 0;
+double Physics::ddy = 0;
 
 /*********************************
 * Declare static physics variables for simulator
@@ -172,9 +174,9 @@ void GameState::updateControllerInputs(const Interface* pUI, Lander* landerInsta
 * The lander will be constantly
 * Pulled Down.
  *********************************/
-void Physics::gravity()
+void Physics::applyGravity()
 {
-    dy += GRAVITY *.1;
+    ddy += GRAVITY;
 }
 
 /*********************************
@@ -183,18 +185,20 @@ void Physics::gravity()
  *********************************/
 void Physics::applyIntertia(GameState* GameStateInstance)
 {
-    //landerInstance->x += dx * .1;
-    //landerInstance->y += dy *.1;
-    //GameStateInstance->getptLMInstance().setX(landerInstance->x);
-    //GameStateInstance->getptLMInstance().setY(landerInstance->y);
 
 
-        //  
+    dx = ddx * .1;
+    dy = ddy * .1;
     // replace  "s = s + v"  integrate "s = s + vt + 1/2 at^2"
+    double storestateX = (GameStateInstance->getptLMInstance().getX());
+    double storestateY = (GameStateInstance->getptLMInstance().getY());
+
+    storestateX = storestateX + (dx * .1) + (.5 * ddx * (.1 * .1));
+    storestateY = storestateY + (dy * .1) + (.5 * ddy * (.1 * .1));
 
 
-    GameStateInstance->getptLMInstance().setX(( GameStateInstance->getptLMInstance().getX() + dx));
-    GameStateInstance->getptLMInstance().setY(( GameStateInstance->getptLMInstance().getY() + dy));
+    GameStateInstance->getptLMInstance().setX(storestateX);
+    GameStateInstance->getptLMInstance().setY(storestateY);
 
 
 
@@ -212,9 +216,9 @@ void Lander::applyThrustEffect(Lander* landerInstance)
 {
     if (landerInstance->getThrust() == true)
     {
-        Physics().dy += (cos(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT) *.1;
+        Physics().ddy += (cos(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT); //acceleration
 
-        Physics().dx += ( - 1 * (sin(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT)) *.1;
+        Physics().ddx += ( - 1 * (sin(landerInstance->angle) * Lander().THRUST / Lander().WEIGHT));
 
         landerInstance->decrementFuel();
     }
@@ -227,7 +231,7 @@ void Lander::applyThrustEffect(Lander* landerInstance)
  *********************************/
 double Physics::totalVelocity()
 {
-    return sqrt(dx * dx + dy * dy) * .1;
+    return sqrt(dx * dx + dy * dy);
 }
 
 
