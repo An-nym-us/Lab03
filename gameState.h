@@ -4,9 +4,12 @@
  * Author:
  *    Jonathan Gunderson, Dahal Sulav
  * Summary:
- *     This class is designed to hold the states for all on-screen entities 
- *      and their current state within the simulator. All information is funneled 
- *      through the game state class as the director for the current session.
+ *  This class is designed to hold the states for all on-screen entities 
+ *      and their current state within the simulator. All instances are 
+ *      created when this class is initiated and those instances will not be 
+ *      destroyed until THIS created class (the gamestate) is destroyed.
+ *  Remember that this is the director for the simulator, if the 
+ *      director dies, the show dies/ends.   
  ************************************************************************/
 
 
@@ -18,6 +21,7 @@
 #include "ground.h"
 #include "lander.h"
 #include "crash.h"
+#include "star.h"
 #include "environmentalForces.h"
 
 
@@ -31,14 +35,15 @@ public:
     {};
 
 
-    Ground& const getGroundInstance() { return ground; }
-    Lander& const getLanderInstance() { return landerInstance; }
-    EnvironmentalForces& const getEnvironmentalForcesInstance() { return environmentalForcesInstance;  }
+    Ground& const getGroundInstance() { return ground; }            // Return the current instance of the created GROUND class created in THIS GameState Class
+    Lander& const getLanderInstance() { return landerInstance; }    // Return the current instance of the created LANDER class  created in THIS GameState Class
+    Star& const getStarInstance() { return starInstance;  }         // Return the current instance of the created STAR class  created in THIS GameState Class
+    EnvironmentalForces& const getEnvironmentalForcesInstance() { return environmentalForcesInstance;} // Return the current instance of the created ENVIROMENTALFORCES class created in THIS GameState Class
 
-    void getPlayerController(const Interface* pUI);
-    void onScreenStats(); // Centerlize what text to place on screen
-    void displayEndGameSession(bool endCondition);
-    double altitudeToGround();
+    void getPlayerController(const Interface* pUI, Lander& landerInstance);                 // retrieve the players controls, route data to the lander controls
+    void onScreenStats();                                           // Centerlize what text to place on screen
+    void displayEndGameSession(bool endCondition);                  // Display the end game result, 
+    double altitudeToGround();                                      // Display the currnet distance beween the GROUND instance and the LANDER instance
 
 
 
@@ -47,12 +52,13 @@ private:
 
 
     bool endGame = false;
-    Point ptUpperRight;   // size of the screen
-    Ground ground;
-    Lander landerInstance;
-    EnvironmentalForces environmentalForcesInstance;
 
-
+    /* Class Generated Instances For Session */
+    Point ptUpperRight;                                     // Size of the screen.
+    Ground ground;                                          // Create ground image.
+    Lander landerInstance;                                  // Create stored instance of the lander state.
+    EnvironmentalForces environmentalForcesInstance;        // Create stored instance of the envoirmental physiscs
+    Star starInstance;
 };
 
 

@@ -14,16 +14,11 @@
 #pragma once
 #include "environmentalForces.h"
 
-
-
-
-
-
 class Lander
 {
 public:
     Lander() :
-        ptLM(550, 550) // starting point on screen for the lander craft (positioned near the upper right corner)
+        ptLM(550, 550)              // starting point on screen for the lander craft (positioned near the upper right corner)
     {};
 
     
@@ -59,9 +54,9 @@ private:
     Point ptLM;                         // location of the LM on the screen
     double fuel = 777;                  // Default starting fuel level
     double angle = 0;                   // Default starting lander angle
-    bool applyThrust = false;           // Default 
+    bool applyThrust = false;           // Default startign state of appied thrust bool
 
 
     /* Lander memeber functions */
-    void decrementFuel();
+    void decrementFuel();               // Decrement the fuel level by one unit
 };

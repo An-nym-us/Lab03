@@ -2,17 +2,9 @@
 *  * 1. Name:
  *      Jonathan Gunderson, Dahal Sulav
  * 2. Assignment Name:
- *      Lab 02: Apollo 11
- * 3. Assignment Description:
- *      Simulate the Apollo 11 landing
- * 4. What was the hardest part? Be as specific as possible.
- *      -a paragraph or two about how the assignment went for you-
- * 5. How long did it take for you to complete the assignment?
- *      -total time in hours: reading the assignment, submitting, and writing code-
+ *      Lab 06: Apollo 11
  *****************************************************************/
  /**********************************************************************
-
-* 
  * GL GameState
  * Just a simple program to demonstrate how to create an Open GL window,
  * draw something on the window, and accept simple user input
@@ -29,26 +21,17 @@
 #include "lander.h"
 #include "environmentalForces.h"
 #include "star.h"
-
-
-
-
 #include <iostream>
-#include <ctime>
-#include <stdlib.h>
-
-#include <cmath>
-
 #include <vector>
 #include <string>
 #include <iomanip>
-#include <sstream>
-#include <format>
+
+
 
 
 
 using namespace std;
-static Star starInstance;
+
 
 
 
@@ -64,63 +47,49 @@ void callBack(const Interface* pUI, void* p)
 {
     ogstream gout;
     playState currentstate = playState(2);
+
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
-    GameState* GameStateInstance = (GameState*)p;
-    Lander& landerInstance = GameStateInstance->getLanderInstance();
-    EnvironmentalForces& environmentalForcesInstance = GameStateInstance->getEnvironmentalForcesInstance();
+
+    GameState* GameStateInstance = (GameState*)p;                                                               // Create the Game state class to stay persistance throughout the game session
+    Lander& landerInstance = GameStateInstance->getLanderInstance();                                            // Get Lander instance created inside of the GameState class
+    Star& starInstance = GameStateInstance->getStarInstance();                                                  // Get Star instance created inside of the GameState class
+    EnvironmentalForces& environmentalForcesInstance = GameStateInstance->getEnvironmentalForcesInstance();     // Get Environmental Forces instance created inside of the GameState class
 
 
 
-    starInstance.show();
-    GameStateInstance->getGroundInstance().draw(gout);   // draw our little star 
+    starInstance.show();                                    // Draw stars created from inside the GameState
+    GameStateInstance->getGroundInstance().draw(gout);      // Draw ground created from inside the GameState
     
 
 
 
 
-    SessionState().sessionState(currentstate, GameStateInstance);
+    SessionState().getCurrentState(currentstate, GameStateInstance);
 
     if ( currentstate == playState(win))
     {
-        GameStateInstance->displayEndGameSession(true);// Display to user that they WON the game.
+        GameStateInstance->displayEndGameSession(true);                                     // Display to user that they WON the game.
     }
     else if (currentstate == playState(lose))
     {
-        GameStateInstance->displayEndGameSession(false);
+        GameStateInstance->displayEndGameSession(false);                                    // Display to user that they LOST the game.
     }
     else
     { 
-        environmentalForcesInstance.applyGravity();
-        environmentalForcesInstance.applyIntertia(landerInstance.getptLMInstance());
-        landerInstance.applyThrustEffect(landerInstance, environmentalForcesInstance);
-        GameStateInstance->getPlayerController(pUI);      // move the ship around
+        environmentalForcesInstance.applyGravity(); // Apply One Game Tick of Gravity
+        environmentalForcesInstance.applyIntertia(landerInstance.getptLMInstance());        // Apply One Game Tick of Intertia
+        landerInstance.applyThrustEffect(landerInstance, environmentalForcesInstance);      // Apply One Game Tick ofthrust
+        GameStateInstance->getPlayerController(pUI, landerInstance);                        // move the ship around
 
         // draw lander flames
         gout.drawLanderFlames(landerInstance.getptLMInstance(), landerInstance.getAngle(), /*angle*/
             pUI->isDown(), pUI->isLeft(), pUI->isRight());
 
-        GameStateInstance->onScreenStats();     // put some text on the screen
+        GameStateInstance->onScreenStats();                                                 // put some text on the screen
         gout.drawLander(landerInstance.getptLMInstance() /*position*/, landerInstance.getAngle() /*angle*/);
-    }
-
-    
+    }  
 }
-
-
-/*********************************
-* 
- *********************************/
-//double EnvironmentalForces::ddx = 0;
-//double EnvironmentalForces::ddy = 0;
-
-/*********************************
-* 
- *********************************/
-
-
-
-
 
 
 
@@ -134,17 +103,27 @@ void EnvironmentalForces::applyGravity()
     ddy += GRAVITY;
 }
 
+
+
 /*********************************
-*
-*
+* Apply Intertia effect. The input will be a point in space, 
+* taken, altered, and returned to its appropriate new value.
+* Time is based on the set dialation which can be calculated
+* Based on the current game framerate.
  *********************************/
 void EnvironmentalForces::applyIntertia(Point& point)
 {
-    dx = ddx * .1;
-    dy = ddy * .1;
+    dx = ddx * TIMEDILATION;
+    dy = ddy * TIMEDILATION;
 
-    point.setX((point.getX()) + (dx * .1) + (.5 * ddx * (.1 * .1)));
-    point.setY((point.getY()) + (dy * .1) + (.5 * ddy * (.1 * .1)));
+    /*********************************
+    *   Apply the kinematic equation of 
+    * -->   s = s + vt + 1/2 at^2   <--- 
+    * The time is based of the the time dilation game modifier
+    *********************************/
+
+    point.setX((point.getX()) + (dx * TIMEDILATION) + (.5 * ddx * (TIMEDILATION * TIMEDILATION)));
+    point.setY((point.getY()) + (dy * TIMEDILATION) + (.5 * ddy * (TIMEDILATION * TIMEDILATION)));
 
 }
 
@@ -169,8 +148,9 @@ void Lander::setThrust(bool thrust)
 }
 
 /*********************************
-*
-*
+* Apply thrust to the lander. THis will be appied to the
+* current acceleration value. That will need to be 
+* follow-up called on by the applyIntertia function.
  *********************************/
 void Lander::applyThrustEffect(Lander& landerInstance, EnvironmentalForces& environmentalForcesInstance)
 {
@@ -178,16 +158,15 @@ void Lander::applyThrustEffect(Lander& landerInstance, EnvironmentalForces& envi
     {
         environmentalForcesInstance.setDDY(environmentalForcesInstance.getDDY() + (cos(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT)); //acceleration
         environmentalForcesInstance.setDDX(environmentalForcesInstance.getDDX() + (-1 * (sin(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT)));
-
-        
         landerInstance.decrementFuel();
     }
 }
 
 
 /*********************************
-*
-*
+* Return Current velocity of the tracked
+* entitiy that the enviromental forces classes
+* was created for.
  *********************************/
 double EnvironmentalForces::getTotalVelocity()
 {
@@ -196,12 +175,11 @@ double EnvironmentalForces::getTotalVelocity()
 
 
 
-
 /*********************************
-*
-*
+* retrieve the players controls, 
+* route data to the lander inputs.
  *********************************/
-void GameState::getPlayerController(const Interface* pUI)
+void GameState::getPlayerController(const Interface* pUI, Lander& landerInstance)
 {
     if (pUI->isRight())
         landerInstance.setAngle(landerInstance.getAngle() - .1);
@@ -213,9 +191,10 @@ void GameState::getPlayerController(const Interface* pUI)
         landerInstance.setThrust(false);
 }
 
+
 /*********************************
-*
-*
+* Retrun the currnet distance beween the 
+* GROUND instnace and the LANDER instance
  *********************************/
 double GameState::altitudeToGround()
 {
@@ -223,12 +202,9 @@ double GameState::altitudeToGround()
 }
 
 
-
-
-
 /*********************************
-*
-*
+* Display the end session flavor text.
+* Text type is based on a WIN/LOSE condition.
  *********************************/
 void GameState::displayEndGameSession(bool endCondition)
 {
@@ -243,8 +219,6 @@ void GameState::displayEndGameSession(bool endCondition)
         endGameSessionInformationOut << "YOU LOSE  :(";
     }
 }
-
-
 
 
 /*********************************
@@ -294,16 +268,17 @@ void Star::show()
 
 
 /*********************************
-*
-*
+* return the current state of the game session, if the lander 
+* is still flying, attempted to land on platform, 
+* or crashed into the ground.
  *********************************/
-void SessionState::sessionState(playState &currentstate, GameState* GameStateInstance)
+void SessionState::getCurrentState(playState &currentstate, GameState* GameStateInstance)
 {
     if ((this->crashedIntoGroundCheck(GameStateInstance)) ||
-    this->isFuelEmpty() == true ||
+    this->isFuelEmptyCheck() == true ||
     (this->landedOnPlatformCheck(GameStateInstance) == true // Check if they landed on the platform.
         && 
-        this->crashedIntoPlatform() == true // ensure player did not hit the plateform at a speed greater 5 m/s
+        this->crashedIntoPlatformCheck(GameStateInstance) == true // ensure player did not hit the plateform at a speed greater 5 m/s
     ))
     {
         currentstate = playState(1);
@@ -318,9 +293,10 @@ void SessionState::sessionState(playState &currentstate, GameState* GameStateIns
     }
 }
 
+
 /*********************************
-*
-*
+* return if the lander has impacted 
+* the ground at any point of the gameplay.
  *********************************/
 bool SessionState::crashedIntoGroundCheck(GameState* GameStateInstance)
 {
@@ -329,8 +305,8 @@ bool SessionState::crashedIntoGroundCheck(GameState* GameStateInstance)
 
 
 /*********************************
-*
-*
+* Check if the lander is inside 
+* the landing zone.
  *********************************/
 bool SessionState::landedOnPlatformCheck(GameState* GameStateInstance)
 { 
@@ -339,10 +315,11 @@ bool SessionState::landedOnPlatformCheck(GameState* GameStateInstance)
 
 
 /*********************************
-*
-*
+* Check if the lander hit the platform at 
+* a velocity greater than 5 m / s. 
+* if so, report crash, else landed.
  *********************************/
-bool SessionState::crashedIntoPlatform()
+bool SessionState::crashedIntoPlatformCheck(GameState* GameStateInstance)
 {
     if (EnvironmentalForces().getTotalVelocity() > 5.0)
     {
@@ -355,13 +332,11 @@ bool SessionState::crashedIntoPlatform()
 }
 
 
-
-
 /*********************************
-*
-*
+* Retrun current fuel-level of 
+* the moon lander.
  *********************************/
-bool SessionState::isFuelEmpty()
+bool SessionState::isFuelEmptyCheck()
 {
     if (Lander().getFuelStatus() <= 0.0)
     {
