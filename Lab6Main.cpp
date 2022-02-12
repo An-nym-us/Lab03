@@ -27,7 +27,7 @@
 #include "crash.h"
 #include "gameState.h"
 #include "lander.h"
-#include "physics.h"
+#include "environmentalForces.h"
 #include "star.h"
 
 
@@ -50,7 +50,7 @@
 
 using namespace std;
 static Star starInstance;
-static Lander landerInstance;
+
 
 
 
@@ -64,12 +64,12 @@ static Lander landerInstance;
 void callBack(const Interface* pUI, void* p)
 {
     ogstream gout;
-
+    playState currentstate = playState(2);
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
     GameState* GameStateInstance = (GameState*)p;
-    playState currentstate = playState(2);
-
+    Lander& landerInstance = GameStateInstance->getLanderInstance();
+    EnvironmentalForces& environmentalForcesInstance = GameStateInstance->getEnvironmentalForcesInstance();
 
 
 
@@ -84,18 +84,18 @@ void callBack(const Interface* pUI, void* p)
 
     if ( currentstate == playState(win))
     {
-        GameStateInstance->endGameSessionInformation(true);// Display to user that they WON the game.
+        GameStateInstance->displayEndGameSession(true);// Display to user that they WON the game.
     }
     else if (currentstate == playState(lose))
     {
-        GameStateInstance->endGameSessionInformation(false);
+        GameStateInstance->displayEndGameSession(false);
     }
     else
     { 
-        EnvironmentalForces().applyGravity();
-        EnvironmentalForces().applyIntertia(GameStateInstance);
-        landerInstance.applyThrustEffect();
-        GameStateInstance->updateControllerInputs(pUI);      // move the ship around
+        environmentalForcesInstance.applyGravity();
+        environmentalForcesInstance.applyIntertia(landerInstance);
+        landerInstance.applyThrustEffect(landerInstance);
+        GameStateInstance->getPlayerController(pUI);      // move the ship around
 
         // draw lander flames
         gout.drawLanderFlames(landerInstance.getptLMInstance(), landerInstance.getAngle(), /*angle*/
@@ -105,10 +105,6 @@ void callBack(const Interface* pUI, void* p)
         gout.drawLander(landerInstance.getptLMInstance() /*position*/, landerInstance.getAngle() /*angle*/);
     }
 
-
-
-
-
     
 }
 
@@ -116,8 +112,6 @@ void callBack(const Interface* pUI, void* p)
 /*********************************
 * 
  *********************************/
-double EnvironmentalForces::dx = 0;
-double EnvironmentalForces::dy = 0;
 double EnvironmentalForces::ddx = 0;
 double EnvironmentalForces::ddy = 0;
 
@@ -127,41 +121,12 @@ double EnvironmentalForces::ddy = 0;
 
 
 
- /*********************************
- * Decrement the amount of fuel that
- * is currently in the lander, Only 
- * When the user applys thrust.
-  *********************************/
-void Lander::decrementFuel()
-{
-    fuel -= 1;
-}
 
-void Lander::setThrust(bool thrust)
-{
-    applyThrust = thrust;
-}
 
-/*********************************
-*
-* 
- *********************************/
-void GameState::updateControllerInputs(const Interface* pUI)
-{
-    if (pUI->isRight())
-        landerInstance.setAngle(landerInstance.getAngle() - .1);
-    if (pUI->isLeft())
-        landerInstance.setAngle(landerInstance.getAngle() + .1);
-    if (pUI->isDown())
-        landerInstance.setThrust(true);
-    else
-        landerInstance.setThrust(false);
-
-}
 
 
 /*********************************
-* Create The effect of Gravity
+* Create The effect of Gravity.
 * The lander will be constantly
 * Pulled Down.
  *********************************/
@@ -174,42 +139,46 @@ void EnvironmentalForces::applyGravity()
 *
 *
  *********************************/
-void EnvironmentalForces::applyIntertia(GameState* GameStateInstance)
+void EnvironmentalForces::applyIntertia(Lander& landerInstance)
 {
-
-
     dx = ddx * .1;
     dy = ddy * .1;
 
-    double storestateX = (landerInstance.getptLMInstance().getX());
-    double storestateY = (landerInstance.getptLMInstance().getY());
-
-    storestateX = storestateX + (dx * .1) + (.5 * ddx * (.1 * .1));
-    storestateY = storestateY + (dy * .1) + (.5 * ddy * (.1 * .1));
-
-
-    landerInstance.getptLMInstance().setX(storestateX);
-    landerInstance.getptLMInstance().setY(storestateY);
-
-
-
-
-
+    landerInstance.getptLMInstance().setX((landerInstance.getptLMInstance().getX()) + (dx * .1) + (.5 * ddx * (.1 * .1)));
+    landerInstance.getptLMInstance().setY((landerInstance.getptLMInstance().getY()) + (dy * .1) + (.5 * ddy * (.1 * .1)));
 }
 
+/*********************************
+* Decrement the amount of fuel that
+* is currently in the lander, Only
+* When the user applys thrust.
+ *********************************/
+void Lander::decrementFuel()
+{
+    fuel -= 1;
+}
 
 
 /*********************************
 *
 *
  *********************************/
-void Lander::applyThrustEffect()
+void Lander::setThrust(bool thrust)
+{
+    applyThrust = thrust;
+}
+
+/*********************************
+*
+*
+ *********************************/
+void Lander::applyThrustEffect(Lander& landerInstance)
 {
     if (landerInstance.isThrust() == true)
     {
-        EnvironmentalForces().ddy += (cos(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT); //acceleration
-        EnvironmentalForces().ddx += ( - 1 * (sin(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT));
-
+        EnvironmentalForces().setDDY(EnvironmentalForces().getDDY() + (cos(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT)); //acceleration
+        EnvironmentalForces().setDDX(EnvironmentalForces().getDDX() + (-1 * (sin(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT)));
+        
         landerInstance.decrementFuel();
     }
 }
@@ -219,7 +188,7 @@ void Lander::applyThrustEffect()
 *
 *
  *********************************/
-double EnvironmentalForces::totalVelocity()
+double EnvironmentalForces::getTotalVelocity()
 {
     return sqrt(dx * dx + dy * dy);
 }
@@ -227,6 +196,21 @@ double EnvironmentalForces::totalVelocity()
 
 
 
+/*********************************
+*
+*
+ *********************************/
+void GameState::getPlayerController(const Interface* pUI)
+{
+    if (pUI->isRight())
+        landerInstance.setAngle(landerInstance.getAngle() - .1);
+    if (pUI->isLeft())
+        landerInstance.setAngle(landerInstance.getAngle() + .1);
+    if (pUI->isDown())
+        landerInstance.setThrust(true);
+    else
+        landerInstance.setThrust(false);
+}
 
 /*********************************
 *
@@ -245,7 +229,7 @@ double GameState::altitudeToGround()
 *
 *
  *********************************/
-void GameState::endGameSessionInformation(bool endCondition)
+void GameState::displayEndGameSession(bool endCondition)
 {
     ogstream endGameSessionInformationOut;
     endGameSessionInformationOut.setPosition(Point(250, 400.0));
@@ -271,9 +255,9 @@ void GameState::onScreenStats()
     ogstream gout;
     gout.setPosition(Point(30.0, 550.0));
 
-    gout << "Fuel:\t" << landerInstance.getFuelStatus() << " lbs" << "\n"
+    gout << "Fuel:\t" << this->getLanderInstance().getFuelStatus() << " lbs" << "\n"
         << "Altitude:\t" << this->altitudeToGround() << " meters" << "\n"
-        << "Speed:\t" << EnvironmentalForces().totalVelocity() << showpoint << fixed << setprecision(2) << " m/s";
+        << "Speed:\t" << this->getEnvironmentalForcesInstance().getTotalVelocity() << showpoint << fixed << setprecision(2) << " m/s";
 }
 
 
@@ -339,7 +323,7 @@ void Crash::landerCrashed(playState &currentstate, GameState* GameStateInstance)
  *********************************/
 bool Crash::crashedIntoGroundCheck(GameState* GameStateInstance)
 {
-    return GameStateInstance->getGroundInstance().hitGround(landerInstance.getptLMInstance(), Lander().getMoonLanderWidth());
+    return GameStateInstance->getGroundInstance().hitGround(GameStateInstance->getLanderInstance().getptLMInstance(), Lander().getMoonLanderWidth());
 }
 
 
@@ -349,7 +333,7 @@ bool Crash::crashedIntoGroundCheck(GameState* GameStateInstance)
  *********************************/
 bool Crash::landedOnPlatformCheck(GameState* GameStateInstance)
 { 
-    return GameStateInstance->getGroundInstance().onPlatform(landerInstance.getptLMInstance(), Lander().getMoonLanderWidth());
+    return GameStateInstance->getGroundInstance().onPlatform(GameStateInstance->getLanderInstance().getptLMInstance(), Lander().getMoonLanderWidth());
 }
 
 
@@ -359,7 +343,7 @@ bool Crash::landedOnPlatformCheck(GameState* GameStateInstance)
  *********************************/
 bool Crash::crashedIntoPlatform()
 {
-    if (EnvironmentalForces().totalVelocity() > 5.0)
+    if (EnvironmentalForces().getTotalVelocity() > 5.0)
     {
         return true;
     }

@@ -56,7 +56,7 @@
     <ClInclude Include="crash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="physics.h">
+    <ClInclude Include="environmentalForces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="star.h">

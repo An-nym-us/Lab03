@@ -4,7 +4,7 @@
 #include "uiInteract.h"
 #include "uiDraw.h"
 #include "ground.h"
-#include "gameState.h"
+
 
 
 
@@ -20,9 +20,8 @@ public:
     
     bool isThrust() { return applyThrust; }
     void setThrust(bool thrust);
-    void applyThrustEffect();
-    double getAngle() { return angle; }
-    void setAngle(double angle) { this->angle = angle; }
+    void applyThrustEffect(Lander& landerInstance);
+
 
 
 
@@ -31,6 +30,9 @@ public:
     int getMoonLanderWidth()  { return MOONLANDERWIDTH; }
     double getWeight() { return WEIGHT; }
     double getThrust() { return THRUST;  }
+
+    double getAngle() { return angle; }
+    void setAngle(double angle) { this->angle = angle; }
 
 
 

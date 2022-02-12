@@ -6,7 +6,7 @@
 #include "ground.h"
 #include "lander.h"
 #include "crash.h"
-
+#include "environmentalForces.h"
 
 
 
@@ -16,17 +16,16 @@ class GameState
 public:
     GameState(const Point& ptUpperRight) :
         ground(ptUpperRight)
-    {    };
+    {};
 
-
-
-
-    bool endGame = false;
 
     Ground& const getGroundInstance() { return ground; }
-    void updateControllerInputs(const Interface* pUI);
+    Lander& const getLanderInstance() { return landerInstance; }
+    EnvironmentalForces& const getEnvironmentalForcesInstance() { return environmentalForcesInstance;  }
+
+    void getPlayerController(const Interface* pUI);
     void onScreenStats(); // Centerlize what text to place on screen
-    void endGameSessionInformation(bool endCondition);
+    void displayEndGameSession(bool endCondition);
     double altitudeToGround();
 
 
@@ -35,17 +34,12 @@ public:
 private:
 
 
-
+    bool endGame = false;
     Point ptUpperRight;   // size of the screen
     Ground ground;
+    Lander landerInstance;
+    EnvironmentalForces environmentalForcesInstance;
 
-
-
-
-    
-
-
-    
 
 };
 

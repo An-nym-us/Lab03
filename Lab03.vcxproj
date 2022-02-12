@@ -31,7 +31,7 @@
     <ClInclude Include="ground.h" />
     <ClInclude Include="gameState.h" />
     <ClInclude Include="lander.h" />
-    <ClInclude Include="physics.h" />
+    <ClInclude Include="environmentalForces.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="star.h" />
     <ClInclude Include="uiDraw.h" />
