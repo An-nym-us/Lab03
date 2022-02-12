@@ -1,13 +1,23 @@
-#pragma once
+/***********************************************************************
+ * Header File:
+ *    class SessionState
 
+ * Author:
+ *    Jonathan Gunderson, Dahal Sulav
+ * Summary:
+ *
+ ************************************************************************/
+
+
+#pragma once
 #include "gameState.h"
 
 enum playState { win, lose, resume };
 
-class Crash
+class SessionState
 {
 public:
-    void landerCrashed(playState &currentstate, GameState* GameStateInstance) ;
+    void sessionState(playState &currentstate, GameState* GameStateInstance) ;
 
 private:
     bool crashedIntoGroundCheck(GameState* GameStateInstance);

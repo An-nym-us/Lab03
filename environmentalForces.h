@@ -1,8 +1,13 @@
+/***********************************************************************
+ * Header File:
+ *    EnvironmentalForces
+ * Author:
+ *    Jonathan Gunderson, Dahal Sulav
+ * Summary:
+ *    
+ ************************************************************************/
+
 #pragma once
-
-#include "gameState.h"
-#include "lander.h"
-
 
 
 class EnvironmentalForces
@@ -10,7 +15,7 @@ class EnvironmentalForces
 public:
 
     void applyGravity();
-    void applyIntertia(Lander& landerInstance);
+    void applyIntertia(Point& point);
     double getTotalVelocity();
     double getDDX() { return ddx; }
     double getDDY() { return ddy; }
@@ -20,13 +25,19 @@ public:
 
 
 private:
+
+    /* Environmental Constants */
     const double GRAVITY = -1.625;
 
 
+    /* Environmental Member Variables */
     double dx;
     double dy;
-    static double ddx;
-    static double ddy;
+    //static double ddx;
+    //static double ddy;
 
+
+    double ddx;
+    double ddy;
 
 };

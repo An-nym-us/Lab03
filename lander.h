@@ -1,9 +1,18 @@
-#pragma once
+/***********************************************************************
+ * Header File:
+ *    Lander
+ * Author:
+ *    Jonathan Gunderson, Dahal Sulav
+ * Summary:
+ *    Create an instance of the lander. This call will hold its current 
+ *      location on the screen, and apply any forces that are instigated by the 
+ *      lander craft, such as its rotation and thrust, will be contained 
+ *      within this class
+ ************************************************************************/
 
-#include "point.h"
-#include "uiInteract.h"
-#include "uiDraw.h"
-#include "ground.h"
+
+#pragma once
+#include "environmentalForces.h"
 
 
 
@@ -14,13 +23,15 @@ class Lander
 {
 public:
     Lander() :
-        ptLM(550, 550)
+        ptLM(550, 550) // starting point on screen for the lander craft (positioned near the upper right corner)
     {};
 
     
-    bool isThrust() { return applyThrust; }
+
+
+    bool isThrust() { return applyThrust; }             
     void setThrust(bool thrust);
-    void applyThrustEffect(Lander& landerInstance);
+    void applyThrustEffect(Lander& landerInstance, EnvironmentalForces& environmentalForcesInstance);
 
 
 
@@ -28,8 +39,6 @@ public:
     Point& const getptLMInstance() { return ptLM; }
     double getFuelStatus() { return fuel; }
     int getMoonLanderWidth()  { return MOONLANDERWIDTH; }
-    double getWeight() { return WEIGHT; }
-    double getThrust() { return THRUST;  }
 
     double getAngle() { return angle; }
     void setAngle(double angle) { this->angle = angle; }
@@ -38,13 +47,21 @@ public:
 
 
 private:
-    const int MOONLANDERWIDTH = 9.44; // width of the lander in meters
-    const double WEIGHT = 15103.00;
-    const double THRUST = 45000.00;
 
-    Point ptLM;           // location of the LM on the screen
-    double fuel = 777;
-    double angle = 0;
-    bool applyThrust = false;
+    /* Lander constants to be accessed from this class*/
+    const int MOONLANDERWIDTH = 9.44;   // width of the lander in meters
+    const double WEIGHT = 15103.00;     // Mass of the lander in Kilograms
+    const double THRUST = 45000.00;     // Effective thrust in Newtons
+
+
+
+    /* Lander memeber variables */
+    Point ptLM;                         // location of the LM on the screen
+    double fuel = 777;                  // Default starting fuel level
+    double angle = 0;                   // Default starting lander angle
+    bool applyThrust = false;           // Default 
+
+
+    /* Lander memeber functions */
     void decrementFuel();
 };

@@ -36,8 +36,7 @@
 #include <iostream>
 #include <ctime>
 #include <stdlib.h>
-#include <iomanip>
-#define _USE_MATH_DEFINES
+
 #include <cmath>
 
 #include <vector>
@@ -80,7 +79,7 @@ void callBack(const Interface* pUI, void* p)
 
 
 
-    Crash().landerCrashed(currentstate, GameStateInstance);
+    SessionState().sessionState(currentstate, GameStateInstance);
 
     if ( currentstate == playState(win))
     {
@@ -93,8 +92,8 @@ void callBack(const Interface* pUI, void* p)
     else
     { 
         environmentalForcesInstance.applyGravity();
-        environmentalForcesInstance.applyIntertia(landerInstance);
-        landerInstance.applyThrustEffect(landerInstance);
+        environmentalForcesInstance.applyIntertia(landerInstance.getptLMInstance());
+        landerInstance.applyThrustEffect(landerInstance, environmentalForcesInstance);
         GameStateInstance->getPlayerController(pUI);      // move the ship around
 
         // draw lander flames
@@ -112,8 +111,8 @@ void callBack(const Interface* pUI, void* p)
 /*********************************
 * 
  *********************************/
-double EnvironmentalForces::ddx = 0;
-double EnvironmentalForces::ddy = 0;
+//double EnvironmentalForces::ddx = 0;
+//double EnvironmentalForces::ddy = 0;
 
 /*********************************
 * 
@@ -139,13 +138,14 @@ void EnvironmentalForces::applyGravity()
 *
 *
  *********************************/
-void EnvironmentalForces::applyIntertia(Lander& landerInstance)
+void EnvironmentalForces::applyIntertia(Point& point)
 {
     dx = ddx * .1;
     dy = ddy * .1;
 
-    landerInstance.getptLMInstance().setX((landerInstance.getptLMInstance().getX()) + (dx * .1) + (.5 * ddx * (.1 * .1)));
-    landerInstance.getptLMInstance().setY((landerInstance.getptLMInstance().getY()) + (dy * .1) + (.5 * ddy * (.1 * .1)));
+    point.setX((point.getX()) + (dx * .1) + (.5 * ddx * (.1 * .1)));
+    point.setY((point.getY()) + (dy * .1) + (.5 * ddy * (.1 * .1)));
+
 }
 
 /*********************************
@@ -172,12 +172,13 @@ void Lander::setThrust(bool thrust)
 *
 *
  *********************************/
-void Lander::applyThrustEffect(Lander& landerInstance)
+void Lander::applyThrustEffect(Lander& landerInstance, EnvironmentalForces& environmentalForcesInstance)
 {
     if (landerInstance.isThrust() == true)
     {
-        EnvironmentalForces().setDDY(EnvironmentalForces().getDDY() + (cos(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT)); //acceleration
-        EnvironmentalForces().setDDX(EnvironmentalForces().getDDX() + (-1 * (sin(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT)));
+        environmentalForcesInstance.setDDY(environmentalForcesInstance.getDDY() + (cos(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT)); //acceleration
+        environmentalForcesInstance.setDDX(environmentalForcesInstance.getDDX() + (-1 * (sin(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT)));
+
         
         landerInstance.decrementFuel();
     }
@@ -296,7 +297,7 @@ void Star::show()
 *
 *
  *********************************/
-void Crash::landerCrashed(playState &currentstate, GameState* GameStateInstance)
+void SessionState::sessionState(playState &currentstate, GameState* GameStateInstance)
 {
     if ((this->crashedIntoGroundCheck(GameStateInstance)) ||
     this->isFuelEmpty() == true ||
@@ -321,7 +322,7 @@ void Crash::landerCrashed(playState &currentstate, GameState* GameStateInstance)
 *
 *
  *********************************/
-bool Crash::crashedIntoGroundCheck(GameState* GameStateInstance)
+bool SessionState::crashedIntoGroundCheck(GameState* GameStateInstance)
 {
     return GameStateInstance->getGroundInstance().hitGround(GameStateInstance->getLanderInstance().getptLMInstance(), Lander().getMoonLanderWidth());
 }
@@ -331,7 +332,7 @@ bool Crash::crashedIntoGroundCheck(GameState* GameStateInstance)
 *
 *
  *********************************/
-bool Crash::landedOnPlatformCheck(GameState* GameStateInstance)
+bool SessionState::landedOnPlatformCheck(GameState* GameStateInstance)
 { 
     return GameStateInstance->getGroundInstance().onPlatform(GameStateInstance->getLanderInstance().getptLMInstance(), Lander().getMoonLanderWidth());
 }
@@ -341,7 +342,7 @@ bool Crash::landedOnPlatformCheck(GameState* GameStateInstance)
 *
 *
  *********************************/
-bool Crash::crashedIntoPlatform()
+bool SessionState::crashedIntoPlatform()
 {
     if (EnvironmentalForces().getTotalVelocity() > 5.0)
     {
@@ -360,7 +361,7 @@ bool Crash::crashedIntoPlatform()
 *
 *
  *********************************/
-bool Crash::isFuelEmpty()
+bool SessionState::isFuelEmpty()
 {
     if (Lander().getFuelStatus() <= 0.0)
     {

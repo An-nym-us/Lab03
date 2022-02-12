@@ -1,3 +1,15 @@
+/***********************************************************************
+ * Header File:
+ *    GameState
+ * Author:
+ *    Jonathan Gunderson, Dahal Sulav
+ * Summary:
+ *     This class is designed to hold the states for all on-screen entities 
+ *      and their current state within the simulator. All information is funneled 
+ *      through the game state class as the director for the current session.
+ ************************************************************************/
+
+
 #pragma once
 #include "point.h"
 #include "crash.h"
