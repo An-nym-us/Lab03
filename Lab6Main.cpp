@@ -68,10 +68,6 @@ void callBack(const Interface* pUI, void* p)
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
     GameState* GameStateInstance = (GameState*)p;
-
-
-
-
     playState currentstate = playState(2);
 
 
@@ -85,6 +81,7 @@ void callBack(const Interface* pUI, void* p)
 
 
     Crash().landerCrashed(currentstate, GameStateInstance);
+
     if ( currentstate == playState(win))
     {
         GameStateInstance->endGameSessionInformation(true);// Display to user that they WON the game.
@@ -119,8 +116,6 @@ void callBack(const Interface* pUI, void* p)
 /*********************************
 * 
  *********************************/
-//double Lander::fuel = 777;
-double Lander::angle = 0;
 double EnvironmentalForces::dx = 0;
 double EnvironmentalForces::dy = 0;
 double EnvironmentalForces::ddx = 0;
@@ -210,11 +205,9 @@ void EnvironmentalForces::applyIntertia(GameState* GameStateInstance)
  *********************************/
 void Lander::applyThrustEffect()
 {
-
-    if (landerInstance.getThrust() == true)
+    if (landerInstance.isThrust() == true)
     {
         EnvironmentalForces().ddy += (cos(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT); //acceleration
-
         EnvironmentalForces().ddx += ( - 1 * (sin(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT));
 
         landerInstance.decrementFuel();
@@ -346,7 +339,7 @@ void Crash::landerCrashed(playState &currentstate, GameState* GameStateInstance)
  *********************************/
 bool Crash::crashedIntoGroundCheck(GameState* GameStateInstance)
 {
-    return GameStateInstance->getGroundInstance().hitGround(landerInstance.getptLMInstance(), Lander().MOONLANDERWIDTH);
+    return GameStateInstance->getGroundInstance().hitGround(landerInstance.getptLMInstance(), Lander().getMoonLanderWidth());
 }
 
 
@@ -356,7 +349,7 @@ bool Crash::crashedIntoGroundCheck(GameState* GameStateInstance)
  *********************************/
 bool Crash::landedOnPlatformCheck(GameState* GameStateInstance)
 { 
-    return GameStateInstance->getGroundInstance().onPlatform(landerInstance.getptLMInstance(), Lander().MOONLANDERWIDTH);
+    return GameStateInstance->getGroundInstance().onPlatform(landerInstance.getptLMInstance(), Lander().getMoonLanderWidth());
 }
 
 
