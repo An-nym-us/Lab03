@@ -28,14 +28,14 @@ public:
 private:
 
     /* Environmental Constants */
-    const double GRAVITY = -1.625;
-    const double TIMEDILATION = .1;
+    const double GRAVITY = -1.625;                  // Moon gravity
+    const double TIMEDILATION = .1;                 // Time dilation of based on game tick/framerate
 
 
     /* Environmental Member Variables */
-    double dx;
-    double dy;
-    double ddx;
-    double ddy;
+    double dx;                                      // World location in X-axis
+    double dy;                                      // World location in Y-axis
+    double ddx;                                     // World accelleration in X-axis
+    double ddy;                                     // World accelleration in Y-axis     
 
 };

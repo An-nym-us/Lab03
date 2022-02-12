@@ -54,10 +54,9 @@ void callBack(const Interface* pUI, void* p)
     EnvironmentalForces& environmentalForcesInstance = GameStateInstance->getEnvironmentalForcesInstance();     // Get Environmental Forces instance created inside of the GameState class
 
 
+    constellationsInstance.show();                              // Draw stars created from inside the constellations class
+    GameStateInstance->getGroundInstance().draw(gout);          // Draw ground created from inside the GameState
 
-    constellationsInstance.show();                           // Draw stars created from inside the constellations class
-    GameStateInstance->getGroundInstance().draw(gout);      // Draw ground created from inside the GameState
-    
 
 
 
@@ -66,15 +65,15 @@ void callBack(const Interface* pUI, void* p)
 
     if ( currentstate == playState(win))
     {
-        GameStateInstance->displayEndGameSession(true);                                     // Display to user that they WON the game.
+        GameStateInstance->displayEndGameSession(true);         // Display to user that they WON the game.
     }
     else if (currentstate == playState(lose))
     {
-        GameStateInstance->displayEndGameSession(false);                                    // Display to user that they LOST the game.
+        GameStateInstance->displayEndGameSession(false);        // Display to user that they LOST the game.
     }
     else
     { 
-        environmentalForcesInstance.applyGravity(); // Apply One Game Tick of Gravity
+        environmentalForcesInstance.applyGravity();                                         // Apply One Game Tick of Gravity
         environmentalForcesInstance.applyIntertia(landerInstance.getptLMInstance());        // Apply One Game Tick of Intertia
         landerInstance.applyThrustEffect(landerInstance, environmentalForcesInstance);      // Apply One Game Tick ofthrust
         GameStateInstance->getPlayerController(pUI, landerInstance);                        // move the ship around
@@ -96,9 +95,9 @@ void callBack(const Interface* pUI, void* p)
  *********************************/
 void Constellations::show()
 {
-    for (int i = 0; i < constellationsInstance.size(); i++)
+    for (int i = 0; i < constellationsInstance.size(); i++) // Iterate through the stored stars vector.
     { 
-        constellationsInstance.at(i).show();
+        constellationsInstance.at(i).show();    // Display the stars on screen.
     }
 }
 
@@ -341,7 +340,6 @@ bool SessionState::isFuelEmptyCheck()
     {
         return false;
     }
-
 }
 
 
