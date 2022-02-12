@@ -15,11 +15,18 @@
 
 enum playState { win, lose, resume };   // enum of thre current play state of the game. Used to designate if the game is done.
 
+
+
+/*********************************************
+ * Class SessionState 
+ *  Return the current state of the game session,
+    if the lander is still flying, attempted to land on platform,
+    or crashed into the ground
+ *********************************************/
 class SessionState
 {
 public:
 
-    /* return the current state of the game session, if the lander is still flying, attempted to land on platform, or crashed into the ground */
     void getCurrentState(playState &currentstate, GameState* GameStateInstance);   
 
 private:

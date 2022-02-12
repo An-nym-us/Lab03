@@ -25,21 +25,25 @@
 #include "environmentalForces.h"
 
 
-
+ /***********************************************************
+  * Class Game State 
+  ***********************************************************/
 
 class GameState 
 {
 public:
+    // Constructor 
     GameState(const Point& ptUpperRight) :
         ground(ptUpperRight)
     {};
 
-
+    // Instances of the class 
     Ground& const getGroundInstance() { return ground; }            // Return the current instance of the created GROUND class created in THIS GameState Class
     Lander& const getLanderInstance() { return landerInstance; }    // Return the current instance of the created LANDER class  created in THIS GameState Class
     Constellations& const getConstellationsInstance() { return constellationsInstance;  }               // Return the current instance of the created CONSTELLATIONS class  created in THIS GameState Class
     EnvironmentalForces& const getEnvironmentalForcesInstance() { return environmentalForcesInstance;}  // Return the current instance of the created ENVIROMENTALFORCES class created in THIS GameState Class
 
+    // Methods 
     void getPlayerController(const Interface* pUI, Lander& landerInstance);                 // retrieve the players controls, route data to the lander controls
     void onScreenStats();                                           // Centerlize what text to place on screen
     void displayEndGameSession(bool endCondition);                  // Display the end game result, 

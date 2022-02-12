@@ -11,10 +11,15 @@
 #include <vector>
 
 
+ /*********************************************
+  * Star
+  * A single Star 
+  *********************************************/
+
 class Star
 {
 public:
-
+    // Constructor 
     Star() : location((rand() % 500 + 50), (rand() % 500 + 30))             // set a random location for the star on the screeen.
     {
         phase = random(0, 255);         // set a default random starting brightness.

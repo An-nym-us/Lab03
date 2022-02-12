@@ -17,13 +17,13 @@
 class Lander
 {
 public:
+
+    // Constructor 
     Lander() :
         ptLM(550, 550)              // starting point on screen for the lander craft (positioned is near the upper right corner)
     {};
 
     
-
-
     bool isThrustActive() { return applyThrust; }               // Get if the player requested active apply thrust to lander
     void setThrustActive(bool thrust);                          // Set that player is requesting thrust be applied to the moon lander
     void applyThrustEffect(Lander& landerInstance, EnvironmentalForces& environmentalForcesInstance);           // apply thurst movement to the lander in space

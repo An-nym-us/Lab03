@@ -58,8 +58,7 @@ void callBack(const Interface* pUI, void* p)
     GameStateInstance->getGroundInstance().draw(gout);          // Draw ground created from inside the GameState
 
 
-
-
+    // Get the current state of the lander 
 
     SessionState().getCurrentState(currentstate, GameStateInstance);
 
@@ -215,8 +214,8 @@ void GameState::getPlayerController(const Interface* pUI, Lander& landerInstance
 
 
 /*********************************
-* Retrun the currnet distance beween the 
-* GROUND instnace and the LANDER instance
+* Return the currnet distance beween the 
+* GROUND instance and the LANDER instance
  *********************************/
 double GameState::altitudeToGround()
 {
@@ -262,7 +261,7 @@ void GameState::onScreenStats()
 
 
 /*********************************
-* return the current state of the game session, if the lander 
+* Return the current state of the game session, if the lander 
 * is still flying, attempted to land on platform, 
 * or crashed into the ground.
  *********************************/
@@ -327,7 +326,7 @@ bool SessionState::crashedIntoPlatformCheck(GameState* GameStateInstance)
 
 
 /*********************************
-* Retrun current fuel-level of 
+* Return current fuel-level of 
 * the moon lander.
  *********************************/
 bool SessionState::isFuelEmptyCheck()

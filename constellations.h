@@ -12,6 +12,12 @@
 #include "star.h"
 #include <vector>
 
+
+ /*********************************************
+  * Constelation of Stars 
+  * Creates the mutiple instances of each star.
+  *********************************************/
+
 class Constellations
 {
 public:
