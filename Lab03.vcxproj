@@ -27,6 +27,7 @@
     <ClCompile Include="uiInteract.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="constellations.h" />
     <ClInclude Include="crash.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="gameState.h" />

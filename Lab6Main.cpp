@@ -14,7 +14,8 @@
 #include "uiInteract.h"
 #include "uiDraw.h"
 #include "ground.h"
-
+#include "constellations.h"
+#include "star.h"
 
 #include "crash.h"
 #include "gameState.h"
@@ -31,10 +32,6 @@
 
 
 using namespace std;
-
-
-
-
 
 /*************************************
  * All the interesting work happens here, when
@@ -53,12 +50,12 @@ void callBack(const Interface* pUI, void* p)
 
     GameState* GameStateInstance = (GameState*)p;                                                               // Create the Game state class to stay persistance throughout the game session
     Lander& landerInstance = GameStateInstance->getLanderInstance();                                            // Get Lander instance created inside of the GameState class
-    Star& starInstance = GameStateInstance->getStarInstance();                                                  // Get Star instance created inside of the GameState class
+    Constellations& constellationsInstance = GameStateInstance->getConstellationsInstance();                    // Get Constellations instance created inside of the GameState class
     EnvironmentalForces& environmentalForcesInstance = GameStateInstance->getEnvironmentalForcesInstance();     // Get Environmental Forces instance created inside of the GameState class
 
 
 
-    starInstance.show();                                    // Draw stars created from inside the GameState
+    constellationsInstance.show();                           // Draw stars created from inside the constellations class
     GameStateInstance->getGroundInstance().draw(gout);      // Draw ground created from inside the GameState
     
 
@@ -89,6 +86,31 @@ void callBack(const Interface* pUI, void* p)
         GameStateInstance->onScreenStats();                                                 // put some text on the screen
         gout.drawLander(landerInstance.getptLMInstance() /*position*/, landerInstance.getAngle() /*angle*/);
     }  
+}
+
+
+
+/*********************************
+* iterate through the vector 
+* of created star instances
+ *********************************/
+void Constellations::show()
+{
+    for (int i = 0; i < constellationsInstance.size(); i++)
+    { 
+        constellationsInstance.at(i).show();
+    }
+}
+
+
+/*********************************
+* Display the star class instance
+ *********************************/
+void Star::show()
+{
+    ogstream gout;
+    gout.drawStar(location, phase);
+    phase++;
 }
 
 
@@ -139,10 +161,11 @@ void Lander::decrementFuel()
 
 
 /*********************************
-*
-*
+* Set if the player is requesting 
+* that thrust be applied to the moon
+* lander, by the moon lander.
  *********************************/
-void Lander::setThrust(bool thrust)
+void Lander::setThrustActive(bool thrust)
 {
     applyThrust = thrust;
 }
@@ -154,10 +177,10 @@ void Lander::setThrust(bool thrust)
  *********************************/
 void Lander::applyThrustEffect(Lander& landerInstance, EnvironmentalForces& environmentalForcesInstance)
 {
-    if (landerInstance.isThrust() == true)
+    if (landerInstance.isThrustActive() == true)
     {
-        environmentalForcesInstance.setDDY(environmentalForcesInstance.getDDY() + (cos(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT)); //acceleration
-        environmentalForcesInstance.setDDX(environmentalForcesInstance.getDDX() + (-1 * (sin(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT)));
+        environmentalForcesInstance.setDDY(environmentalForcesInstance.getDDY() + (cos(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT));                //acceleration In vertical axis
+        environmentalForcesInstance.setDDX(environmentalForcesInstance.getDDX() + (-1 * (sin(landerInstance.getAngle()) * Lander().THRUST / Lander().WEIGHT)));         //acceleration In horizontal axis
         landerInstance.decrementFuel();
     }
 }
@@ -186,9 +209,9 @@ void GameState::getPlayerController(const Interface* pUI, Lander& landerInstance
     if (pUI->isLeft())
         landerInstance.setAngle(landerInstance.getAngle() + .1);
     if (pUI->isDown())
-        landerInstance.setThrust(true);
+        landerInstance.setThrustActive(true);
     else
-        landerInstance.setThrust(false);
+        landerInstance.setThrustActive(false);
 }
 
 
@@ -236,35 +259,7 @@ void GameState::onScreenStats()
 }
 
 
-/*********************************
-* This will create multiple instances
-* of the stars on the screen above 
-* the ground.
- *********************************/
-void Star::show()
-{
-   ogstream gout;
-    
-    vector<Point> points;
-    int x[51] = {40,50,60,70,100,20,10,120,150,160,190,200,220,230,240,250,260,270,300,350,360,390,400,410, 450,460,480,500,310,320,480,500,510};
-    int y[51] = {400,500,600,410,420,510,520,450,500,600,530,240,560,450,460,490,520,300,330,350,280,290,300,303,403,503,499,599,299,399,320,480,550};
-    int z[52] = { 40,50,60,70,100,20,10,120,150,160,190,200,220,230,240,250,20,244,0,10,400,40,60, 45,460,0,50,255,200,200,50,80 };
-    
-//    Point test; // create random on screen postions for the stars
-//    Point test2(100,401);
-    for(int i=0; i <31; i++){
-        Point test(x[i],y[i]);
-        points.push_back(test);
-    }
-    
-    
-    for(int i=0; i < points.size(); i++)
-    {
-        int currentPhase = z[i] + phase;
-        gout.drawStar(points[i], currentPhase);
-        phase++;
-    }
-}
+
 
 
 /*********************************

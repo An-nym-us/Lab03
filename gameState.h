@@ -37,8 +37,8 @@ public:
 
     Ground& const getGroundInstance() { return ground; }            // Return the current instance of the created GROUND class created in THIS GameState Class
     Lander& const getLanderInstance() { return landerInstance; }    // Return the current instance of the created LANDER class  created in THIS GameState Class
-    Star& const getStarInstance() { return starInstance;  }         // Return the current instance of the created STAR class  created in THIS GameState Class
-    EnvironmentalForces& const getEnvironmentalForcesInstance() { return environmentalForcesInstance;} // Return the current instance of the created ENVIROMENTALFORCES class created in THIS GameState Class
+    Constellations& const getConstellationsInstance() { return constellationsInstance;  }               // Return the current instance of the created CONSTELLATIONS class  created in THIS GameState Class
+    EnvironmentalForces& const getEnvironmentalForcesInstance() { return environmentalForcesInstance;}  // Return the current instance of the created ENVIROMENTALFORCES class created in THIS GameState Class
 
     void getPlayerController(const Interface* pUI, Lander& landerInstance);                 // retrieve the players controls, route data to the lander controls
     void onScreenStats();                                           // Centerlize what text to place on screen
@@ -58,7 +58,8 @@ private:
     Ground ground;                                          // Create ground image.
     Lander landerInstance;                                  // Create stored instance of the lander state.
     EnvironmentalForces environmentalForcesInstance;        // Create stored instance of the envoirmental physiscs
-    Star starInstance;
+
+    Constellations constellationsInstance;
 };
 
 

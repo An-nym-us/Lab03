@@ -62,6 +62,9 @@
     <ClInclude Include="star.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="constellations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
